@@ -1,0 +1,11 @@
+{
+    "name": "Cooperatives",
+    "alias": "cooperatives",
+    "description": "Cooperative registry management for farmers and milk collection cooperatives.",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Cooperatives\\Providers\\CooperativesServiceProvider"
+    ],
+    "files": []
+}
