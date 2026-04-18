@@ -36,21 +36,25 @@ class PurchaseRequisitionController extends Controller
         // 1. User can view ALL requisitions
         if ($user->can('view all requisition')) {
             $requisitions = PurchaseRequisition::latest()->get();
-        } 
+        }
+        // 2. User can approve as HOD → see entire department
+        elseif ($user->can('approve hod requisition') && $department) {
+            $requisitions = PurchaseRequisition::where('department_id', $department->id)
+                ->latest()
+                ->get();
+        }
+        // 3. Normal user with a department → see only their own requisitions
+        elseif ($department) {
+            $requisitions = PurchaseRequisition::where('department_id', $department->id)
+                ->where('created_by', $user->id)
+                ->latest()
+                ->get();
+        }
+        // 4. No employee/department record — show own requisitions only
         else {
-            // 2. User can approve as HOD → see entire department
-            if ($user->can('approve hod requisition')) {
-                $requisitions = PurchaseRequisition::where('department_id', $department->id)
-                    ->latest()
-                    ->get();
-            } 
-            // 3. Normal user → see only their own requisitions
-            else {
-                $requisitions = PurchaseRequisition::where('department_id', $department->id)
-                    ->where('created_by', $user->id)  // <-- CORRECT: property, not method
-                    ->latest()
-                    ->get();
-            }
+            $requisitions = PurchaseRequisition::where('created_by', $user->id)
+                ->latest()
+                ->get();
         }
     
         return view('purchase_requisitions.index', compact('requisitions'));

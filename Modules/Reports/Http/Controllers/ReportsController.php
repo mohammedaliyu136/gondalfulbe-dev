@@ -137,6 +137,7 @@ class ReportsController extends Controller
             if ($request->filled('grade'))     $query->where('quality_grade', $request->grade);
             if ($request->filled('date_from')) $query->where('date', '>=', $request->date_from);
             if ($request->filled('date_to'))   $query->where('date', '<=', $request->date_to);
+            if ($request->filled('farmer'))    $query->whereHas('farmer', fn($q) => $q->where('name', 'like', '%' . $request->farmer . '%'));
             $collections          = $query->orderByDesc('date')->paginate(50)->withQueryString();
             $summary['total_litres'] = $mc::where('created_by', $creatorId)->sum('quantity_litres');
             $summary['grade_a']   = $mc::where('created_by', $creatorId)->where('quality_grade', 'A')->count();
@@ -145,12 +146,16 @@ class ReportsController extends Controller
             $summary['total']     = $mc::where('created_by', $creatorId)->count();
         }
 
-        $mccs     = ['Mayo', 'Yola', 'Jabbi Lamba', 'Mubi', 'Sunkani'];
-        $grades   = ['A' => 'Premium', 'B' => 'Standard', 'C' => 'Rejected'];
+        $mccList = ['Mayo', 'Yola', 'Jabbi Lamba', 'Mubi', 'Sunkani'];
         $dateFrom = $request->date_from ?? '';
         $dateTo   = $request->date_to   ?? '';
+        $mcc      = $request->mcc    ?? '';
+        $grade    = $request->grade  ?? '';
+        $farmer   = $request->farmer ?? '';
+        $records  = $collections;
+        $summary  = (object) $summary;
 
-        return view('reports::reports.milk-collection', compact('collections', 'summary', 'mccs', 'grades', 'dateFrom', 'dateTo'));
+        return view('reports::reports.milk-collection', compact('records', 'summary', 'mccList', 'dateFrom', 'dateTo', 'mcc', 'grade', 'farmer'));
     }
 
     public function logisticsReport(Request $request)
@@ -159,30 +164,53 @@ class ReportsController extends Controller
             return redirect()->back()->with('error', __('Permission denied.'));
         }
 
-        $creatorId = Auth::user()->creatorId();
-        $trips     = collect();
-        $summary   = ['total_trips' => 0, 'total_litres' => 0, 'avg_cost_litre' => 0];
+        $creatorId   = Auth::user()->creatorId();
+        $mccList     = ['Mayo', 'Yola', 'Jabbi Lamba', 'Mubi', 'Sunkani'];
+        $dateFrom    = $request->date_from ?? '';
+        $dateTo      = $request->date_to   ?? '';
+        $mcc         = $request->mcc    ?? '';
+        $status      = $request->status ?? '';
+        $rider       = $request->rider  ?? '';
+
+        $trips        = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 50);
+        $summary      = (object)['total_trips' => 0, 'total_litres' => 0, 'total_cost' => 0, 'avg_cost_per_litre' => 0];
+        $riderRanking = collect();
+
+        $riders = class_exists(\App\Models\Rider::class)
+            ? \App\Models\Rider::where('created_by', $creatorId)->orderBy('name')->get()
+            : collect();
 
         if (class_exists(\Modules\Logistics\Models\LogisticsTrip::class)) {
             $lt    = \Modules\Logistics\Models\LogisticsTrip::class;
-            $query = $lt::with('rider')->where('created_by', $creatorId);
-            if ($request->filled('mcc'))       $query->where('mcc_source', $request->mcc);
-            if ($request->filled('status'))    $query->where('status', $request->status);
-            if ($request->filled('date_from')) $query->where('trip_date', '>=', $request->date_from);
-            if ($request->filled('date_to'))   $query->where('trip_date', '<=', $request->date_to);
-            $trips                     = $query->orderByDesc('trip_date')->paginate(50)->withQueryString();
-            $summary['total_trips']    = $lt::where('created_by', $creatorId)->count();
-            $summary['total_litres']   = $lt::where('created_by', $creatorId)->sum('litres_transported');
-            $summary['avg_cost_litre'] = $lt::where('created_by', $creatorId)->avg('cost_per_litre');
+            $query = $lt::where('created_by', $creatorId);
+            if ($mcc)      $query->where('mcc_source', $mcc);
+            if ($status)   $query->where('status', $status);
+            if ($rider)    $query->where('rider_id', $rider);
+            if ($dateFrom) $query->where('trip_date', '>=', $dateFrom);
+            if ($dateTo)   $query->where('trip_date', '<=', $dateTo);
+
+            $trips = $query->orderByDesc('trip_date')->paginate(50)->withQueryString();
+
+            $base = $lt::where('created_by', $creatorId);
+            $summary = (object)[
+                'total_trips'       => (clone $base)->count(),
+                'total_litres'      => (clone $base)->sum('litres_transported'),
+                'total_cost'        => (clone $base)->selectRaw('sum(fuel_cost + other_expenses) as tc')->value('tc') ?? 0,
+                'avg_cost_per_litre'=> (clone $base)->avg('cost_per_litre') ?? 0,
+            ];
+
+            $riderRanking = $lt::where('logistics_trips.created_by', $creatorId)
+                ->join('riders', 'riders.id', '=', 'logistics_trips.rider_id')
+                ->selectRaw('riders.name as rider_name, count(*) as trips, sum(logistics_trips.litres_transported) as litres')
+                ->groupBy('riders.id', 'riders.name')
+                ->orderByDesc('litres')
+                ->get();
         }
 
-        $mccs     = ['Mayo', 'Yola', 'Jabbi Lamba', 'Mubi', 'Sunkani'];
-        $statuses = ['Scheduled', 'In Transit', 'Completed', 'Delayed'];
-        $riders   = \App\Models\Rider::where('created_by', $creatorId)->get();
-        $dateFrom = $request->date_from ?? '';
-        $dateTo   = $request->date_to   ?? '';
-
-        return view('reports::reports.logistics', compact('trips', 'summary', 'mccs', 'statuses', 'riders', 'dateFrom', 'dateTo'));
+        return view('reports::reports.logistics', compact(
+            'trips', 'summary', 'riders', 'mccList', 'riderRanking',
+            'dateFrom', 'dateTo', 'mcc', 'status', 'rider'
+        ));
     }
 
     public function centerOperationsReport(Request $request)
@@ -191,29 +219,47 @@ class ReportsController extends Controller
             return redirect()->back()->with('error', __('Permission denied.'));
         }
 
-        $creatorId = Auth::user()->creatorId();
-        $costs     = collect();
-        $summary   = ['total' => 0, 'approved' => 0, 'pending' => 0, 'paid' => 0];
+        $creatorId  = Auth::user()->creatorId();
+        $centers    = ['Mayo', 'Yola', 'Jabbi Lamba', 'Mubi', 'Sunkani'];
+        $categories = ['Labour', 'Cleaning Supplies', 'Maintenance & Repairs', 'Utilities', 'Rent', 'Miscellaneous'];
+        $center     = $request->center   ?? '';
+        $month      = $request->month    ?? now()->format('Y-m');
+        $category   = $request->category ?? '';
+
+        $summary    = (object)['total_spend' => 0, 'approved' => 0, 'pending' => 0, 'paid' => 0];
+        $byCategory = collect();
+        $byCenter   = collect();
 
         if (class_exists(\Modules\CenterOperations\Models\CenterCost::class)) {
-            $cc    = \Modules\CenterOperations\Models\CenterCost::class;
-            $query = $cc::where('created_by', $creatorId);
-            if ($request->filled('mcc'))      $query->where('mcc', $request->mcc);
-            if ($request->filled('status'))   $query->where('status', $request->status);
-            $costs                = $query->orderByDesc('id')->paginate(50)->withQueryString();
-            $summary['total']    = $cc::where('created_by', $creatorId)->sum('amount');
-            $summary['approved'] = $cc::where('created_by', $creatorId)->where('status', 'approved')->sum('amount');
-            $summary['pending']  = $cc::where('created_by', $creatorId)->where('status', 'submitted')->sum('amount');
-            $summary['paid']     = $cc::where('created_by', $creatorId)->where('status', 'paid')->sum('amount');
+            $cc   = \Modules\CenterOperations\Models\CenterCost::class;
+            $base = $cc::where('created_by', $creatorId);
+
+            if ($center)   $base->where('mcc', $center);
+            if ($category) $base->where('category', $category);
+            if ($month) {
+                [$y, $m] = explode('-', $month);
+                $base->whereYear('created_at', $y)->whereMonth('created_at', $m);
+            }
+
+            $summary = (object)[
+                'total_spend' => (clone $base)->sum('amount'),
+                'approved'    => (clone $base)->where('status', 'approved')->sum('amount'),
+                'pending'     => (clone $base)->whereIn('status', ['draft', 'submitted'])->sum('amount'),
+                'paid'        => (clone $base)->where('status', 'paid')->sum('amount'),
+            ];
+
+            $byCategory = (clone $base)->selectRaw('category, count(*) as req_count, sum(amount) as total')
+                ->groupBy('category')->orderByDesc('total')->get();
+
+            $byCenter = (clone $base)->selectRaw('mcc as mcc_name, count(*) as req_count, sum(amount) as total,
+                sum(case when status in (\'draft\',\'submitted\') then 1 else 0 end) as pending_count')
+                ->groupBy('mcc')->orderByDesc('total')->get();
         }
 
-        $mccs       = ['Mayo', 'Yola', 'Jabbi Lamba', 'Mubi', 'Sunkani'];
-        $statuses   = ['draft', 'submitted', 'approved', 'rejected', 'paid'];
-        $categories = ['Labour', 'Cleaning Supplies', 'Maintenance & Repairs', 'Utilities', 'Rent', 'Miscellaneous'];
-        $dateFrom   = $request->date_from ?? '';
-        $dateTo     = $request->date_to   ?? '';
-
-        return view('reports::reports.center-operations', compact('costs', 'summary', 'mccs', 'statuses', 'categories', 'dateFrom', 'dateTo'));
+        return view('reports::reports.center-operations', compact(
+            'centers', 'center', 'month', 'category', 'categories',
+            'summary', 'byCategory', 'byCenter'
+        ));
     }
 
     public function requisitionsReport(Request $request)
@@ -304,8 +350,7 @@ class ReportsController extends Controller
 
             $outstandingCredit = \Modules\OSS\Models\OssAgentSale::selectRaw('agent_id, sum(total_amount) as credit_total')
                 ->where('created_by', $creatorId)
-                ->where('payment_method', 'credit')
-                ->where('payment_status', '!=', 'paid')
+                ->where('is_credit', true)
                 ->groupBy('agent_id')
                 ->with('agent')
                 ->get();
@@ -315,14 +360,32 @@ class ReportsController extends Controller
             ? \Modules\Extension\Models\ExtensionAgent::where('created_by', $creatorId)->orderBy('name')->get()
             : collect();
 
-        $dateFrom = $request->date_from ?? '';
-        $dateTo   = $request->date_to   ?? '';
+        $centers        = ['Mayo', 'Yola', 'Jabbi Lamba', 'Mubi', 'Sunkani'];
+        $center         = $request->center   ?? '';
+        $dateFrom       = $request->date_from ?? '';
+        $dateTo         = $request->date_to   ?? '';
+        $farmersReached = $summary['farmers_reached'];
+        $eventsHeld     = $summary['events'];
+        $agentsBelow    = $belowTargetAgents;
+
+        $agentStats = collect();
+        if (class_exists(\Modules\Extension\Models\FieldVisit::class) && class_exists(\Modules\Extension\Models\ExtensionAgent::class)) {
+            $fv = \Modules\Extension\Models\FieldVisit::class;
+            $agentStats = $fv::where('field_visits.created_by', $creatorId)
+                ->join('extension_agents', 'extension_agents.id', '=', 'field_visits.agent_id')
+                ->selectRaw('extension_agents.name as agent_name, field_visits.center as mcc_name,
+                    count(*) as visit_count, count(distinct DATE(visit_date)) as days_active')
+                ->groupBy('extension_agents.id', 'extension_agents.name', 'field_visits.center')
+                ->orderByDesc('visit_count')
+                ->get();
+        }
 
         return view('reports::reports.extension', compact(
             'visits', 'summary', 'agents',
             'visitsPerAgent', 'topicCoverage', 'farmerParticipation',
             'belowTargetAgents', 'ossSalesPerAgent', 'outstandingCredit',
-            'dateFrom', 'dateTo'
+            'centers', 'center', 'dateFrom', 'dateTo',
+            'farmersReached', 'eventsHeld', 'agentsBelow', 'agentStats'
         ));
     }
 
