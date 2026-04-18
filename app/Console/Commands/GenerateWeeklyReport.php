@@ -2,13 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Purchase;
+use App\Models\PurchaseRequisition;
 use App\Models\User;
 use App\Models\Vender;
 use App\Models\WeeklyReport;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Storage;
-use Modules\MilkCollection\Models\MilkCollection;
-use Modules\Requisitions\Models\Requisition;
+use Illuminate\Support\Facades\DB;
 
 class GenerateWeeklyReport extends Command
 {
@@ -25,31 +25,39 @@ class GenerateWeeklyReport extends Command
         foreach ($companies as $company) {
             $creatorId = $company->id;
 
-            $activeFarmers    = Vender::where('created_by', $creatorId)->where('is_active', 1)->count();
-            $totalFarmers     = Vender::where('created_by', $creatorId)->count();
+            $activeFarmers      = Vender::where('created_by', $creatorId)->where('is_active', 1)->count();
+            $totalFarmers       = Vender::where('created_by', $creatorId)->count();
             $financialInclusion = $totalFarmers > 0 ? round($activeFarmers / $totalFarmers * 100) : 0;
 
-            $weekLitres = MilkCollection::where('created_by', $creatorId)
-                ->whereBetween('date', [$weekStart->toDateString(), $weekEnd->toDateString()])
-                ->sum('quantity_litres');
+            // Sum purchase_products.quantity for purchases in the week
+            $weekLitres = DB::table('purchase_products')
+                ->join('purchases', 'purchases.id', '=', 'purchase_products.purchase_id')
+                ->where('purchases.created_by', $creatorId)
+                ->whereBetween('purchases.purchase_date', [$weekStart->toDateString(), $weekEnd->toDateString()])
+                ->sum('purchase_products.quantity');
+
+            // Group by warehouse name as MCC proxy
+            $mccRows = DB::table('purchase_products')
+                ->join('purchases', 'purchases.id', '=', 'purchase_products.purchase_id')
+                ->join('warehouses', 'warehouses.id', '=', 'purchases.warehouse_id')
+                ->where('purchases.created_by', $creatorId)
+                ->whereBetween('purchases.purchase_date', [$weekStart->toDateString(), $weekEnd->toDateString()])
+                ->selectRaw('warehouses.name as mcc, sum(purchase_products.quantity) as week_qty')
+                ->groupBy('warehouses.id', 'warehouses.name')
+                ->get();
 
             $mccSummary = [];
-            foreach (['Mayo', 'Yola', 'Jabbi Lamba', 'Mubi', 'Sunkani'] as $mcc) {
-                $mccSummary[$mcc] = [
-                    'week' => MilkCollection::where('created_by', $creatorId)
-                        ->where('mcc', $mcc)
-                        ->whereBetween('date', [$weekStart->toDateString(), $weekEnd->toDateString()])
-                        ->sum('quantity_litres'),
-                ];
+            foreach ($mccRows as $row) {
+                $mccSummary[$row->mcc] = ['week' => $row->week_qty];
             }
 
             $centersOperational = count(array_filter($mccSummary, fn($m) => $m['week'] > 0));
 
-            $requisitionsCount = Requisition::where('created_by', $creatorId)
+            $requisitionsCount = PurchaseRequisition::where('created_by', $creatorId)
                 ->whereBetween('created_at', [$weekStart, $weekEnd])
                 ->count();
 
-            $requisitionsByStatus = Requisition::where('created_by', $creatorId)
+            $requisitionsByStatus = PurchaseRequisition::where('created_by', $creatorId)
                 ->selectRaw('status, count(*) as count')
                 ->groupBy('status')
                 ->pluck('count', 'status')
@@ -63,7 +71,7 @@ class GenerateWeeklyReport extends Command
                 'requisitionsByStatus', 'mccSummary', 'paymentsTotal'
             ))->render();
 
-            $dir      = storage_path('app/reports/weekly');
+            $dir = storage_path('app/reports/weekly');
             if (!is_dir($dir)) mkdir($dir, 0755, true);
 
             $filename = 'weekly_report_' . $weekStart->format('Y-m-d') . '_company_' . $creatorId . '.html';

@@ -872,7 +872,7 @@
                 </li>
             @endif
             {{-- ── Gondal Fulbe Modules ─────────────────────────────────────── --}}
-            @if (Gate::check('manage milk collection'))
+            {{-- @if (Gate::check('manage milk collection'))
                 <li class="dash-item dash-hasmenu {{ request()->is('milk-collections*') ? ' active dash-trigger' : '' }}">
                     <a href="#!" class="dash-link"><span class="dash-micon"><i class="ti ti-droplet"></i></span><span class="dash-mtext">{{ __('Milk Collection') }}</span><span class="dash-arrow"><i data-feather="chevron-right"></i></span></a>
                     <ul class="dash-submenu">
@@ -887,7 +887,7 @@
                         </li>
                     </ul>
                 </li>
-            @endif
+            @endif --}}
             @if (Gate::check('manage logistics'))
                 <li class="dash-item dash-hasmenu {{ request()->is('logistics*') || request()->is('riders*') ? ' active dash-trigger' : '' }}">
                     <a href="#!" class="dash-link"><span class="dash-micon"><i class="ti ti-truck"></i></span><span class="dash-mtext">{{ __('Logistics') }}</span><span class="dash-arrow"><i data-feather="chevron-right"></i></span></a>
@@ -906,11 +906,11 @@
                     <a href="{{ route('center-costs.index') }}" class="dash-link"><span class="dash-micon"><i class="ti ti-building"></i></span><span class="dash-mtext">{{ __('Center Operations') }}</span></a>
                 </li>
             @endif
-            @if (Gate::check('manage requisitions'))
+            {{-- @if (Gate::check('manage requisitions'))
                 <li class="dash-item {{ request()->is('requisitions*') ? ' active' : '' }}">
                     <a href="{{ route('requisitions.index') }}" class="dash-link"><span class="dash-micon"><i class="ti ti-file-invoice"></i></span><span class="dash-mtext">{{ __('Requisitions') }}</span></a>
                 </li>
-            @endif
+            @endif --}}
             @if (Gate::check('manage oss products'))
                 <li class="dash-item dash-hasmenu {{ request()->is('oss*') ? ' active dash-trigger' : '' }}">
                     <a href="#!" class="dash-link"><span class="dash-micon"><i class="ti ti-shopping-bag"></i></span><span class="dash-mtext">{{ __('One Stop Shop') }}</span><span class="dash-arrow"><i data-feather="chevron-right"></i></span></a>

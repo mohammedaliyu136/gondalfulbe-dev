@@ -6,9 +6,9 @@ use App\Mail\DailyCenterSummary;
 use App\Models\Inventory;
 use App\Models\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Modules\CenterOperations\Models\CenterCost;
-use Modules\MilkCollection\Models\MilkCollection;
 
 class SendDailyCenterSummary extends Command
 {
@@ -28,18 +28,29 @@ class SendDailyCenterSummary extends Command
         }
 
         foreach ($managers as $manager) {
-            $mcc        = $manager->assigned_mcc;
-            $creatorId  = $manager->creatorId();
+            $mcc       = $manager->assigned_mcc;
+            $creatorId = $manager->creatorId();
 
-            $todayLitres = MilkCollection::where('created_by', $creatorId)
-                ->where('mcc', $mcc)
-                ->whereDate('date', today())
-                ->sum('quantity_litres');
+            // Match warehouse by name containing the assigned MCC string
+            $warehouseIds = DB::table('warehouses')
+                ->where('name', 'like', '%' . $mcc . '%')
+                ->where('created_by', $creatorId)
+                ->pluck('id');
 
-            $pendingCosts = CenterCost::where('created_by', $creatorId)
-                ->where('mcc', $mcc)
-                ->where('status', 'submitted')
-                ->count();
+            // Sum today's purchase quantities across matching warehouses
+            $todayLitres = DB::table('purchase_products')
+                ->join('purchases', 'purchases.id', '=', 'purchase_products.purchase_id')
+                ->whereIn('purchases.warehouse_id', $warehouseIds)
+                ->where('purchases.created_by', $creatorId)
+                ->whereDate('purchases.purchase_date', today())
+                ->sum('purchase_products.quantity');
+
+            $pendingCosts = class_exists(CenterCost::class)
+                ? CenterCost::where('created_by', $creatorId)
+                    ->where('mcc', $mcc)
+                    ->where('status', 'submitted')
+                    ->count()
+                : 0;
 
             $lowStockCount = Inventory::where('created_by', $creatorId)
                 ->whereColumn('quantity', '<=', 'reorder_level')

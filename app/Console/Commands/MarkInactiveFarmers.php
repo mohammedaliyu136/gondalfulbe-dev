@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Models\Vender;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Modules\MilkCollection\Models\MilkCollection;
 
 class MarkInactiveFarmers extends Command
 {
@@ -16,8 +15,10 @@ class MarkInactiveFarmers extends Command
     {
         $cutoff = now()->subDays(60)->toDateString();
 
-        $activeIds = MilkCollection::where('date', '>=', $cutoff)
-            ->pluck('farmer_id')
+        // Farmers who have a purchase record on or after the cutoff date
+        $activeIds = DB::table('purchases')
+            ->where('purchase_date', '>=', $cutoff)
+            ->pluck('vender_id')
             ->unique();
 
         $updated = Vender::where('is_active', 1)
