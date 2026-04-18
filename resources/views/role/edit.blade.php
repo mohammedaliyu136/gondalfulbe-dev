@@ -30,6 +30,30 @@
                 <li class="nav-item">
                     <a class="nav-link" id="pills-account-tab" data-bs-toggle="pill" href="#pos" role="tab" aria-controls="pills-contact" aria-selected="false">{{__('POS')}}</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-milk-tab" data-bs-toggle="pill" href="#milkcollection" role="tab" aria-controls="pills-contact" aria-selected="false">{{__('Milk Collection')}}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-logistics-tab" data-bs-toggle="pill" href="#logistics" role="tab" aria-controls="pills-contact" aria-selected="false">{{__('Logistics')}}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-centerops-tab" data-bs-toggle="pill" href="#centerops" role="tab" aria-controls="pills-contact" aria-selected="false">{{__('Center Ops')}}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-requisitions-tab" data-bs-toggle="pill" href="#requisitions" role="tab" aria-controls="pills-contact" aria-selected="false">{{__('Requisitions')}}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-oss-tab" data-bs-toggle="pill" href="#oss" role="tab" aria-controls="pills-contact" aria-selected="false">{{__('OSS')}}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-extension-tab" data-bs-toggle="pill" href="#extension" role="tab" aria-controls="pills-contact" aria-selected="false">{{__('Extension')}}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-sponsors-tab" data-bs-toggle="pill" href="#sponsors" role="tab" aria-controls="pills-contact" aria-selected="false">{{__('Sponsors')}}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-reports-tab" data-bs-toggle="pill" href="#reports" role="tab" aria-controls="pills-contact" aria-selected="false">{{__('Reports')}}</a>
+                </li>
 
             </ul>
             <div class="tab-content" id="pills-tabContent">
@@ -1410,6 +1434,314 @@
                         </div>
                     </div>
                 </div>
+
+                {{-- ===== Milk Collection Tab ===== --}}
+                <div class="tab-pane fade" id="milkcollection" role="tabpanel" aria-labelledby="pills-milk-tab">
+                    @php $modules = ['milk collection']; @endphp
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @if(!empty($permissions))
+                                <h6 class="my-3">{{__('Assign Milk Collection Permission to Roles')}}</h6>
+                                <table class="table table-striped mb-0">
+                                    <thead><tr>
+                                        <th><input type="checkbox" class="form-check-input custom_align_middle" name="milk_checkall" id="milk_checkall"></th>
+                                        <th>{{__('Module')}}</th><th>{{__('Permissions')}}</th>
+                                    </tr></thead>
+                                    <tbody>
+                                    @foreach($modules as $module)
+                                        <tr>
+                                            <td><input type="checkbox" class="form-check-input ischeck milk_checkall" data-id="{{str_replace(' ','', $module)}}"></td>
+                                            <td><label class="ischeck" data-id="{{str_replace(' ','', $module)}}">{{ ucfirst($module) }}</label></td>
+                                            <td><div class="row">
+                                                @if(in_array('manage '.$module,(array)$permissions))@if($key=array_search('manage '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck milk_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'Manage',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                                @if(in_array('create '.$module,(array)$permissions))@if($key=array_search('create '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck milk_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'Create',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                                @if(in_array('edit '.$module,(array)$permissions))@if($key=array_search('edit '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck milk_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'Edit',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                                @if(in_array('delete '.$module,(array)$permissions))@if($key=array_search('delete '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck milk_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'Delete',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                            </div></td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                {{-- ===== Logistics Tab ===== --}}
+                <div class="tab-pane fade" id="logistics" role="tabpanel" aria-labelledby="pills-logistics-tab">
+                    @php $modules = ['logistics']; @endphp
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @if(!empty($permissions))
+                                <h6 class="my-3">{{__('Assign Logistics Permission to Roles')}}</h6>
+                                <table class="table table-striped mb-0">
+                                    <thead><tr>
+                                        <th><input type="checkbox" class="form-check-input custom_align_middle" name="logistics_checkall" id="logistics_checkall"></th>
+                                        <th>{{__('Module')}}</th><th>{{__('Permissions')}}</th>
+                                    </tr></thead>
+                                    <tbody>
+                                    @foreach($modules as $module)
+                                        <tr>
+                                            <td><input type="checkbox" class="form-check-input ischeck logistics_checkall" data-id="{{str_replace(' ','', $module)}}"></td>
+                                            <td><label class="ischeck" data-id="{{str_replace(' ','', $module)}}">{{ ucfirst($module) }}</label></td>
+                                            <td><div class="row">
+                                                @if(in_array('manage '.$module,(array)$permissions))@if($key=array_search('manage '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck logistics_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'Manage',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                                @if(in_array('create '.$module,(array)$permissions))@if($key=array_search('create '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck logistics_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'Create',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                                @if(in_array('edit '.$module,(array)$permissions))@if($key=array_search('edit '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck logistics_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'Edit',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                                @if(in_array('delete '.$module,(array)$permissions))@if($key=array_search('delete '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck logistics_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'Delete',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                            </div></td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                {{-- ===== Center Operations Tab ===== --}}
+                <div class="tab-pane fade" id="centerops" role="tabpanel" aria-labelledby="pills-centerops-tab">
+                    @php $modules = ['center operations']; @endphp
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @if(!empty($permissions))
+                                <h6 class="my-3">{{__('Assign Center Operations Permission to Roles')}}</h6>
+                                <table class="table table-striped mb-0">
+                                    <thead><tr>
+                                        <th><input type="checkbox" class="form-check-input custom_align_middle" name="centerops_checkall" id="centerops_checkall"></th>
+                                        <th>{{__('Module')}}</th><th>{{__('Permissions')}}</th>
+                                    </tr></thead>
+                                    <tbody>
+                                    @foreach($modules as $module)
+                                        <tr>
+                                            <td><input type="checkbox" class="form-check-input ischeck centerops_checkall" data-id="{{str_replace(' ','', $module)}}"></td>
+                                            <td><label class="ischeck" data-id="{{str_replace(' ','', $module)}}">{{ ucfirst($module) }}</label></td>
+                                            <td><div class="row">
+                                                @if(in_array('manage '.$module,(array)$permissions))@if($key=array_search('manage '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck centerops_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'Manage',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                                @if(in_array('create '.$module,(array)$permissions))@if($key=array_search('create '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck centerops_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'Create',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                                @if(in_array('edit '.$module,(array)$permissions))@if($key=array_search('edit '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck centerops_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'Edit',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                                @if(in_array('delete '.$module,(array)$permissions))@if($key=array_search('delete '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck centerops_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'Delete',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                            </div></td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                {{-- ===== Requisitions Tab (explicit permission list) ===== --}}
+                <div class="tab-pane fade" id="requisitions" role="tabpanel" aria-labelledby="pills-requisitions-tab">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @if(!empty($permissions))
+                                <h6 class="my-3">{{__('Assign Requisitions Permission to Roles')}}</h6>
+                                <table class="table table-striped mb-0">
+                                    <thead><tr>
+                                        <th><input type="checkbox" class="form-check-input custom_align_middle" name="requisitions_checkall" id="requisitions_checkall"></th>
+                                        <th>{{__('Module')}}</th><th>{{__('Permissions')}}</th>
+                                    </tr></thead>
+                                    <tbody>
+                                    <tr>
+                                        <td><input type="checkbox" class="form-check-input ischeck requisitions_checkall" data-id="requisitions"></td>
+                                        <td><label class="ischeck" data-id="requisitions">Requisitions</label></td>
+                                        <td><div class="row">
+                                            @foreach(['manage requisitions','create requisition','edit requisition','delete requisition','approve requisition'] as $perm)
+                                                @if(in_array($perm,(array)$permissions))
+                                                    @php $key = array_search($perm,$permissions); @endphp
+                                                    @if($key !== false)
+                                                        <div class="col-md-3 custom-control custom-checkbox">
+                                                            {{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck requisitions_checkall isscheck_requisitions','id'=>'permission'.$key])}}
+                                                            {{Form::label('permission'.$key, ucwords(explode(' ',$perm)[0]), ['class'=>'custom-control-label'])}}<br>
+                                                        </div>
+                                                    @endif
+                                                @endif
+                                            @endforeach
+                                        </div></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                {{-- ===== OSS Tab ===== --}}
+                <div class="tab-pane fade" id="oss" role="tabpanel" aria-labelledby="pills-oss-tab">
+                    @php $modules = ['oss products']; @endphp
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @if(!empty($permissions))
+                                <h6 class="my-3">{{__('Assign One Stop Shop Permission to Roles')}}</h6>
+                                <table class="table table-striped mb-0">
+                                    <thead><tr>
+                                        <th><input type="checkbox" class="form-check-input custom_align_middle" name="oss_checkall" id="oss_checkall"></th>
+                                        <th>{{__('Module')}}</th><th>{{__('Permissions')}}</th>
+                                    </tr></thead>
+                                    <tbody>
+                                    @foreach($modules as $module)
+                                        <tr>
+                                            <td><input type="checkbox" class="form-check-input ischeck oss_checkall" data-id="{{str_replace(' ','', $module)}}"></td>
+                                            <td><label class="ischeck" data-id="{{str_replace(' ','', $module)}}">{{ ucfirst($module) }}</label></td>
+                                            <td><div class="row">
+                                                @if(in_array('manage '.$module,(array)$permissions))@if($key=array_search('manage '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck oss_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'Manage',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                                @if(in_array('create '.$module,(array)$permissions))@if($key=array_search('create '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck oss_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'Create',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                                @if(in_array('edit '.$module,(array)$permissions))@if($key=array_search('edit '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck oss_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'Edit',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                                @if(in_array('delete '.$module,(array)$permissions))@if($key=array_search('delete '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck oss_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'Delete',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                            </div></td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                {{-- ===== Extension Tab ===== --}}
+                <div class="tab-pane fade" id="extension" role="tabpanel" aria-labelledby="pills-extension-tab">
+                    @php $modules = ['extension agents']; @endphp
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @if(!empty($permissions))
+                                <h6 class="my-3">{{__('Assign Extension Permission to Roles')}}</h6>
+                                <table class="table table-striped mb-0">
+                                    <thead><tr>
+                                        <th><input type="checkbox" class="form-check-input custom_align_middle" name="extension_checkall" id="extension_checkall"></th>
+                                        <th>{{__('Module')}}</th><th>{{__('Permissions')}}</th>
+                                    </tr></thead>
+                                    <tbody>
+                                    @foreach($modules as $module)
+                                        <tr>
+                                            <td><input type="checkbox" class="form-check-input ischeck extension_checkall" data-id="{{str_replace(' ','', $module)}}"></td>
+                                            <td><label class="ischeck" data-id="{{str_replace(' ','', $module)}}">{{ ucfirst($module) }}</label></td>
+                                            <td><div class="row">
+                                                @if(in_array('manage '.$module,(array)$permissions))@if($key=array_search('manage '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck extension_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'Manage',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                                @if(in_array('create '.$module,(array)$permissions))@if($key=array_search('create '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck extension_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'Create',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                                @if(in_array('edit '.$module,(array)$permissions))@if($key=array_search('edit '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck extension_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'Edit',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                                @if(in_array('delete '.$module,(array)$permissions))@if($key=array_search('delete '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck extension_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'Delete',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                            </div></td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                {{-- ===== Sponsors Tab ===== --}}
+                <div class="tab-pane fade" id="sponsors" role="tabpanel" aria-labelledby="pills-sponsors-tab">
+                    @php $modules = ['sponsors']; @endphp
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @if(!empty($permissions))
+                                <h6 class="my-3">{{__('Assign Sponsors Permission to Roles')}}</h6>
+                                <table class="table table-striped mb-0">
+                                    <thead><tr>
+                                        <th><input type="checkbox" class="form-check-input custom_align_middle" name="sponsors_checkall" id="sponsors_checkall"></th>
+                                        <th>{{__('Module')}}</th><th>{{__('Permissions')}}</th>
+                                    </tr></thead>
+                                    <tbody>
+                                    @foreach($modules as $module)
+                                        <tr>
+                                            <td><input type="checkbox" class="form-check-input ischeck sponsors_checkall" data-id="{{str_replace(' ','', $module)}}"></td>
+                                            <td><label class="ischeck" data-id="{{str_replace(' ','', $module)}}">{{ ucfirst($module) }}</label></td>
+                                            <td><div class="row">
+                                                @if(in_array('manage '.$module,(array)$permissions))@if($key=array_search('manage '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck sponsors_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'Manage',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                                @if(in_array('create '.$module,(array)$permissions))@if($key=array_search('create '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck sponsors_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'Create',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                                @if(in_array('edit '.$module,(array)$permissions))@if($key=array_search('edit '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck sponsors_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'Edit',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                                @if(in_array('delete '.$module,(array)$permissions))@if($key=array_search('delete '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck sponsors_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'Delete',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                            </div></td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                {{-- ===== Reports Tab ===== --}}
+                <div class="tab-pane fade" id="reports" role="tabpanel" aria-labelledby="pills-reports-tab">
+                    @php $modules = ['reports', 'executive dashboard']; @endphp
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @if(!empty($permissions))
+                                <h6 class="my-3">{{__('Assign Reports Permission to Roles')}}</h6>
+                                <table class="table table-striped mb-0">
+                                    <thead><tr>
+                                        <th><input type="checkbox" class="form-check-input custom_align_middle" name="reports_checkall" id="reports_checkall"></th>
+                                        <th>{{__('Module')}}</th><th>{{__('Permissions')}}</th>
+                                    </tr></thead>
+                                    <tbody>
+                                    @foreach($modules as $module)
+                                        <tr>
+                                            <td><input type="checkbox" class="form-check-input ischeck reports_checkall" data-id="{{str_replace(' ','', $module)}}"></td>
+                                            <td><label class="ischeck" data-id="{{str_replace(' ','', $module)}}">{{ ucfirst($module) }}</label></td>
+                                            <td><div class="row">
+                                                @if(in_array('view '.$module,(array)$permissions))@if($key=array_search('view '.$module,$permissions))
+                                                    <div class="col-md-3 custom-control custom-checkbox">{{Form::checkbox('permissions[]',$key,$role->permission,['class'=>'form-check-input isscheck reports_checkall isscheck_'.str_replace(' ','',$module),'id'=>'permission'.$key])}}{{Form::label('permission'.$key,'View',['class'=>'custom-control-label'])}}<br></div>
+                                                @endif @endif
+                                            </div></td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -1441,6 +1773,30 @@
         });
         $("#pos_checkall").click(function(){
             $('.pos_checkall').not(this).prop('checked', this.checked);
+        });
+        $("#milk_checkall").click(function(){
+            $('.milk_checkall').not(this).prop('checked', this.checked);
+        });
+        $("#logistics_checkall").click(function(){
+            $('.logistics_checkall').not(this).prop('checked', this.checked);
+        });
+        $("#centerops_checkall").click(function(){
+            $('.centerops_checkall').not(this).prop('checked', this.checked);
+        });
+        $("#requisitions_checkall").click(function(){
+            $('.requisitions_checkall').not(this).prop('checked', this.checked);
+        });
+        $("#oss_checkall").click(function(){
+            $('.oss_checkall').not(this).prop('checked', this.checked);
+        });
+        $("#extension_checkall").click(function(){
+            $('.extension_checkall').not(this).prop('checked', this.checked);
+        });
+        $("#sponsors_checkall").click(function(){
+            $('.sponsors_checkall').not(this).prop('checked', this.checked);
+        });
+        $("#reports_checkall").click(function(){
+            $('.reports_checkall').not(this).prop('checked', this.checked);
         });
         $(".ischeck").click(function(){
             var ischeck = $(this).data('id');

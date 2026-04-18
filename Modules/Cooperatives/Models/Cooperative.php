@@ -13,6 +13,7 @@ class Cooperative extends Model
         'location',
         'leader_name',
         'leader_phone',
+        'leader_user_id',
         'site_location',
         'formation_date',
         'average_daily_supply',

@@ -1115,6 +1115,7 @@ Route::group(['middleware' => ['verified']], function () {
     Route::post('payslip-farmer/payment/process-reversal', [PaySlipFarmerController::class, 'processReversal'])->name('payslipitem.process.reversal')->middleware(['auth', 'XSS']);
     //--------------------[END TO DO]-------------------------------------------------------------------------------------------------------
     Route::resource('payslip-farmer', PaySlipFarmerController::class)->middleware(['auth', 'XSS']);
+    Route::get('payslip-farmer/reconciliation/view', [PaySlipFarmerController::class, 'reconciliation'])->name('payslip.farmer.reconciliation')->middleware(['auth', 'XSS']);
     //----------------------------------------------------------------------------------------------------------------------------------
 
     Route::resource('company-policy', CompanyPolicyController::class)->middleware(['auth', 'XSS']);

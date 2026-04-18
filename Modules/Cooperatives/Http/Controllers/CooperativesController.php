@@ -246,4 +246,41 @@ class CooperativesController extends Controller
                 'skipped'  => $skipped,
             ]));
     }
+
+    public function leaderDashboard()
+    {
+        if (! Auth::user()->can('manage cooperatives')) {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
+
+        $cooperative = Cooperative::where('created_by', Auth::user()->creatorId())
+            ->where('leader_user_id', Auth::id())
+            ->first();
+
+        if (! $cooperative) {
+            $cooperative = Cooperative::where('created_by', Auth::user()->creatorId())->first();
+        }
+
+        $members     = $cooperative ? $cooperative->farmers()->get() : collect();
+        $memberCount = $members->count();
+        $activeCount = $members->where('is_active', 1)->count();
+
+        $weekLitres  = 0;
+        $monthLitres = 0;
+
+        if ($cooperative && class_exists(\Modules\MilkCollection\Models\MilkCollection::class)) {
+            $farmerIds   = $members->pluck('id');
+            $mc          = \Modules\MilkCollection\Models\MilkCollection::class;
+            $weekLitres  = $mc::whereIn('farmer_id', $farmerIds)
+                ->whereBetween('date', [now()->startOfWeek()->toDateString(), now()->endOfWeek()->toDateString()])
+                ->sum('quantity_litres');
+            $monthLitres = $mc::whereIn('farmer_id', $farmerIds)
+                ->whereMonth('date', now()->month)
+                ->sum('quantity_litres');
+        }
+
+        return view('cooperatives::leader_dashboard', compact(
+            'cooperative', 'members', 'memberCount', 'activeCount', 'weekLitres', 'monthLitres'
+        ));
+    }
 }

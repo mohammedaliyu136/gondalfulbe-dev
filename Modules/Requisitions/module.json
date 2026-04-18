@@ -1,0 +1,11 @@
+{
+    "name": "Requisitions",
+    "alias": "requisitions",
+    "description": "Requisition and multi-tier approval workflow for supplies and services.",
+    "keywords": [],
+    "priority": 4,
+    "providers": [
+        "Modules\\Requisitions\\Providers\\RequisitionsServiceProvider"
+    ],
+    "files": []
+}

@@ -141,9 +141,20 @@ class VenderController extends Controller
             $vender->shipping_phone = $request->shipping_phone;
             $vender->shipping_zip = $request->shipping_zip;
             $vender->shipping_address = $request->shipping_address;
-            $vender->lang = !empty($default_language) ? $default_language->value : '';
-            $vender->created_by = \Auth::user()->creatorId();
-            $vender->cooperative_id = $request->cooperative_id ?: null;
+            $vender->lang                 = !empty($default_language) ? $default_language->value : '';
+            $vender->created_by           = \Auth::user()->creatorId();
+            $vender->cooperative_id       = $request->cooperative_id ?: null;
+            $vender->gender               = $request->gender ?: null;
+            $vender->dob                  = $request->dob ?: null;
+            $vender->gps_lat              = $request->gps_lat ?: null;
+            $vender->gps_lng              = $request->gps_lng ?: null;
+            $vender->digital_payment_flag = $request->has('digital_payment_flag') ? 1 : 0;
+
+            if ($request->hasFile('photo')) {
+                $photoName = time() . '_photo.' . $request->photo->extension();
+                $request->photo->move(public_path('uploads/farmers'), $photoName);
+                $vender->photo = $photoName;
+            }
 
             // Fetch the warehouse name using the selected warehouse ID
             $warehouse = Warehouse::find($request->collection_centre);
@@ -285,17 +296,29 @@ class VenderController extends Controller
             $vender->shipping_zip     = $request->shipping_zip;
             $vender->shipping_address = $request->shipping_address;
             
-            $vender->cooperative_id = $request->cooperative_id ?: null;
+            $vender->cooperative_id       = $request->cooperative_id ?: null;
+            $vender->gender               = $request->gender ?: null;
+            $vender->dob                  = $request->dob ?: null;
+            $vender->gps_lat              = $request->gps_lat ?: null;
+            $vender->gps_lng              = $request->gps_lng ?: null;
+            $vender->digital_payment_flag = $request->has('digital_payment_flag') ? 1 : 0;
 
             // Fetch the warehouse name using the selected warehouse ID
             $warehouse = Warehouse::find($request->collection_centre);
-            $vender->collection_centre = $warehouse->name; // Store the name of the warehouse
+            $vender->collection_centre = $warehouse->name;
 
-            // Handle Image Upload
             if ($request->hasFile('image')) {
                 $imageName = time() . '.' . $request->image->extension();
                 $request->image->move(public_path('uploads/farmers'), $imageName);
-                $vender->image = $imageName;            }
+                $vender->image = $imageName;
+            }
+
+            if ($request->hasFile('photo')) {
+                $photoName = time() . '_photo.' . $request->photo->extension();
+                $request->photo->move(public_path('uploads/farmers'), $photoName);
+                $vender->photo = $photoName;
+            }
+
             $vender->save();
             CustomField::saveData($vender, $request->customField);
 

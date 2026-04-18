@@ -4225,8 +4225,7 @@ class Utility extends Model
                     $name = $name;
 
                     if ($settings['storage_setting'] == 'local') {
-//                    dd(\Storage::disk(),$path);
-                        $request->$key_name->move(storage_path($path), $name);
+                        $request->$key_name->move(public_path($path), $name);
                         $path = $path . $name;
                     } else if ($settings['storage_setting'] == 'wasabi') {
 
@@ -4428,7 +4427,7 @@ class Utility extends Model
             }
 
             if (in_array($settings['storage_setting'], ['local', 'public'])) {
-                return asset('storage/' . $path);
+                return asset($path);
             }
 
             return \Storage::disk($settings['storage_setting'])->url($path);

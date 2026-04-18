@@ -1,0 +1,11 @@
+{
+    "name": "SponsorPortal",
+    "alias": "sponsorportal",
+    "description": "External sponsor portal with project-scoped impact dashboards.",
+    "keywords": [],
+    "priority": 7,
+    "providers": [
+        "Modules\\SponsorPortal\\Providers\\SponsorPortalServiceProvider"
+    ],
+    "files": []
+}

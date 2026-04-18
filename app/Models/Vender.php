@@ -45,6 +45,19 @@ class Vender extends Authenticatable
         'shipping_zip',
         'shipping_address',
         'cooperative_id',
+        'gender',
+        'dob',
+        'photo',
+        'gps_lat',
+        'gps_lng',
+        'digital_payment_flag',
+    ];
+
+    protected $casts = [
+        'dob'                  => 'date',
+        'digital_payment_flag' => 'boolean',
+        'gps_lat'              => 'decimal:7',
+        'gps_lng'              => 'decimal:7',
     ];
 
     protected $hidden = [

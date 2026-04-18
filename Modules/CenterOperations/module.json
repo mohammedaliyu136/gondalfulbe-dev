@@ -1,0 +1,11 @@
+{
+    "name": "CenterOperations",
+    "alias": "centeroperations",
+    "description": "Track and approve MCC operational expenses per centre.",
+    "keywords": [],
+    "priority": 3,
+    "providers": [
+        "Modules\\CenterOperations\\Providers\\CenterOperationsServiceProvider"
+    ],
+    "files": []
+}

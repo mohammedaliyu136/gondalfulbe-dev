@@ -117,9 +117,15 @@ class AuthenticatedSessionController extends Controller
             $validation = [];
         }
         $this->validate($request, $validation);
-        User::defaultEmail();
+        // Only seed email templates once — the method is 2800+ lines and kills login performance
+        if (\App\Models\EmailTemplate::count() == 0) {
+            User::defaultEmail();
+        }
         if($user != null) {
-            $user->userDefaultDataRegister($user->id);
+            // Only register email template assignments if this user has none yet
+            if (\App\Models\UserEmailTemplate::where('user_id', $user->id)->doesntExist()) {
+                $user->userDefaultDataRegister($user->id);
+            }
         }
 
         $request->authenticate();
@@ -191,7 +197,9 @@ class AuthenticatedSessionController extends Controller
         {
 //            $ip = '49.36.83.154'; // This is static ip address
             $ip = $_SERVER['REMOTE_ADDR']; // your ip address here
-            $query = @unserialize(file_get_contents('http://ip-api.com/php/' . $ip));
+            $ipApiCtx = stream_context_create(['http' => ['timeout' => 3]]);
+            $query = @unserialize(@file_get_contents('http://ip-api.com/php/' . $ip, false, $ipApiCtx));
+            if (!is_array($query)) $query = [];
 
             $whichbrowser = new \WhichBrowser\Parser($_SERVER['HTTP_USER_AGENT']);
             if ($whichbrowser->device->type == 'bot') {

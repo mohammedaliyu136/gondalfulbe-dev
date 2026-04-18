@@ -15,7 +15,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('gondal:mark-inactive-farmers')->daily();
+        $schedule->command('gondal:send-followup-reminders')->daily();
+        $schedule->command('gondal:daily-center-summary')->dailyAt('07:00');
+        $schedule->command('gondal:generate-weekly-report')->weeklyOn(1, '07:00');
     }
 
     /**

@@ -1,0 +1,11 @@
+{
+    "name": "OSS",
+    "alias": "oss",
+    "description": "Agricultural inputs inventory, center sales, and agent field distribution.",
+    "keywords": [],
+    "priority": 5,
+    "providers": [
+        "Modules\\OSS\\Providers\\OSSServiceProvider"
+    ],
+    "files": []
+}

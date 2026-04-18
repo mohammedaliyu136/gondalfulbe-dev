@@ -1,0 +1,11 @@
+{
+    "name": "Logistics",
+    "alias": "logistics",
+    "description": "Milk transportation management from MCCs to Sebore processor.",
+    "keywords": [],
+    "priority": 2,
+    "providers": [
+        "Modules\\Logistics\\Providers\\LogisticsServiceProvider"
+    ],
+    "files": []
+}

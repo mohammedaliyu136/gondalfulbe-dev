@@ -871,6 +871,109 @@
                             class="dash-mtext">{{ __('Cooperatives') }}</span></a>
                 </li>
             @endif
+            {{-- ── Gondal Fulbe Modules ─────────────────────────────────────── --}}
+            @if (Gate::check('manage milk collection'))
+                <li class="dash-item dash-hasmenu {{ request()->is('milk-collections*') ? ' active dash-trigger' : '' }}">
+                    <a href="#!" class="dash-link"><span class="dash-micon"><i class="ti ti-droplet"></i></span><span class="dash-mtext">{{ __('Milk Collection') }}</span><span class="dash-arrow"><i data-feather="chevron-right"></i></span></a>
+                    <ul class="dash-submenu">
+                        <li class="dash-item {{ request()->is('milk-collections') ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('milk-collections.index') }}">{{ __('All Collections') }}</a>
+                        </li>
+                        <li class="dash-item {{ request()->is('milk-collections/create') ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('milk-collections.create') }}">{{ __('Record Collection') }}</a>
+                        </li>
+                        <li class="dash-item {{ request()->is('milk-collections/daily-summary*') ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('milk-collections.daily-summary') }}">{{ __('Daily Summary') }}</a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
+            @if (Gate::check('manage logistics'))
+                <li class="dash-item dash-hasmenu {{ request()->is('logistics*') || request()->is('riders*') ? ' active dash-trigger' : '' }}">
+                    <a href="#!" class="dash-link"><span class="dash-micon"><i class="ti ti-truck"></i></span><span class="dash-mtext">{{ __('Logistics') }}</span><span class="dash-arrow"><i data-feather="chevron-right"></i></span></a>
+                    <ul class="dash-submenu">
+                        <li class="dash-item {{ request()->is('logistics*') ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('logistics.index') }}">{{ __('Trips') }}</a>
+                        </li>
+                        <li class="dash-item {{ request()->is('riders*') ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('riders.index') }}">{{ __('Riders') }}</a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
+            @if (Gate::check('manage center operations'))
+                <li class="dash-item {{ request()->is('center-costs*') ? ' active' : '' }}">
+                    <a href="{{ route('center-costs.index') }}" class="dash-link"><span class="dash-micon"><i class="ti ti-building"></i></span><span class="dash-mtext">{{ __('Center Operations') }}</span></a>
+                </li>
+            @endif
+            @if (Gate::check('manage requisitions'))
+                <li class="dash-item {{ request()->is('requisitions*') ? ' active' : '' }}">
+                    <a href="{{ route('requisitions.index') }}" class="dash-link"><span class="dash-micon"><i class="ti ti-file-invoice"></i></span><span class="dash-mtext">{{ __('Requisitions') }}</span></a>
+                </li>
+            @endif
+            @if (Gate::check('manage oss products'))
+                <li class="dash-item dash-hasmenu {{ request()->is('oss*') ? ' active dash-trigger' : '' }}">
+                    <a href="#!" class="dash-link"><span class="dash-micon"><i class="ti ti-shopping-bag"></i></span><span class="dash-mtext">{{ __('One Stop Shop') }}</span><span class="dash-arrow"><i data-feather="chevron-right"></i></span></a>
+                    <ul class="dash-submenu">
+                        <li class="dash-item {{ request()->is('oss/products*') ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('oss-products.index') }}">{{ __('Products') }}</a>
+                        </li>
+                        <li class="dash-item {{ request()->is('oss/inventory*') ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('oss-inventory.index') }}">{{ __('Inventory') }}</a>
+                        </li>
+                        <li class="dash-item {{ request()->is('oss/sales*') ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('oss-sales.index') }}">{{ __('Sales') }}</a>
+                        </li>
+                        <li class="dash-item {{ request()->is('oss/agents*') ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('oss.agent.index') }}">{{ __('Agent Distribution') }}</a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
+            @if (Gate::check('manage extension agents'))
+                <li class="dash-item dash-hasmenu {{ request()->is('extension*') || request()->is('field-visits*') || request()->is('training-events*') ? ' active dash-trigger' : '' }}">
+                    <a href="#!" class="dash-link"><span class="dash-micon"><i class="ti ti-plant"></i></span><span class="dash-mtext">{{ __('Extension') }}</span><span class="dash-arrow"><i data-feather="chevron-right"></i></span></a>
+                    <ul class="dash-submenu">
+                        <li class="dash-item {{ request()->is('extension-agents*') ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('extension-agents.index') }}">{{ __('Agents') }}</a>
+                        </li>
+                        <li class="dash-item {{ request()->is('field-visits*') ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('field-visits.index') }}">{{ __('Field Visits') }}</a>
+                        </li>
+                        <li class="dash-item {{ request()->is('training-events*') ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('training-events.index') }}">{{ __('Training Events') }}</a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
+            @if (Gate::check('manage sponsors'))
+                <li class="dash-item {{ request()->is('admin/sponsors*') ? ' active' : '' }}">
+                    <a href="{{ route('admin.sponsors.index') }}" class="dash-link"><span class="dash-micon"><i class="ti ti-heart-handshake"></i></span><span class="dash-mtext">{{ __('Sponsors') }}</span></a>
+                </li>
+            @endif
+            @if (Gate::check('view reports'))
+                <li class="dash-item dash-hasmenu {{ request()->is('reports*') ? ' active dash-trigger' : '' }}">
+                    <a href="#!" class="dash-link"><span class="dash-micon"><i class="ti ti-chart-bar"></i></span><span class="dash-mtext">{{ __('Reports') }}</span><span class="dash-arrow"><i data-feather="chevron-right"></i></span></a>
+                    <ul class="dash-submenu">
+                        <li class="dash-item {{ request()->is('reports/dashboard') ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('reports.dashboard') }}">{{ __('Executive Dashboard') }}</a>
+                        </li>
+                        <li class="dash-item {{ request()->is('reports/milk-collection') ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('reports.milk') }}">{{ __('Milk Collection') }}</a>
+                        </li>
+                        <li class="dash-item {{ request()->is('reports/logistics') ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('reports.logistics') }}">{{ __('Logistics') }}</a>
+                        </li>
+                        <li class="dash-item {{ request()->is('reports/center-operations') ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('reports.centers') }}">{{ __('Center Operations') }}</a>
+                        </li>
+                        <li class="dash-item {{ request()->is('reports/extension') ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('reports.extension') }}">{{ __('Extension') }}</a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
+            {{-- ── End Gondal Fulbe Modules ─────────────────────────────────── --}}
             @if (Gate::check('manage warehouse') ||
                     Gate::check('manage purchase') ||
                     Gate::check('manage pos') ||

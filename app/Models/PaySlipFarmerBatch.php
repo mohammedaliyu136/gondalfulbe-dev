@@ -5,6 +5,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class PaySlipFarmerBatch extends Model
 {
+    protected static function boot(): void
+    {
+        parent::boot();
+        static::created(fn($m)  => FinancialAuditLog::record('created', $m));
+        static::updated(fn($m)  => FinancialAuditLog::record('updated', $m));
+        static::deleted(fn($m)  => FinancialAuditLog::record('deleted', $m));
+    }
+
     protected $fillable = [
         'batch_id',
         'status',

@@ -13,7 +13,7 @@ class Inventory extends Model
         'category',
         'quantity',
         'reorder_level',
-        
+        'created_by',
     ];
 
 

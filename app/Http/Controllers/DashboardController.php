@@ -88,6 +88,18 @@ class DashboardController extends Controller
                 return redirect()->route('client.dashboard.view');
             } elseif (Auth::user()->type == 'client') {
                 return redirect()->route('client.dashboard.view');
+            } elseif (Auth::user()->type == 'board_member') {
+                return redirect()->route('reports.dashboard');
+            } elseif (Auth::user()->type == 'cooperative_leader') {
+                return redirect()->route('cooperatives.index');
+            } elseif (in_array(Auth::user()->type, ['field_delivery_lead', 'center_manager'])) {
+                return redirect()->route('milk-collections.index');
+            } elseif (Auth::user()->type == 'extension_agent') {
+                return redirect()->route('field-visits.index');
+            } elseif (in_array(Auth::user()->type, [
+                'component_lead', 'finance_officer', 'executive_director', 'system_admin',
+            ])) {
+                return redirect()->route('reports.dashboard');
             } else {
                 if (\Auth::user()->can('show account dashboard')) {
                     $data['latestIncome'] = Revenue::with(['customer'])->where('created_by', '=', \Auth::user()->creatorId())->orderBy('id', 'desc')->limit(5)->get();
@@ -268,8 +280,9 @@ class DashboardController extends Controller
                 return view('dashboard.project-dashboard', compact('home_data'));
             }
         } else {
-
-            return $this->account_dashboard_index();
+            // Avoid circular fallback: account → hrm → project → account (infinite recursion).
+            // Users with no dashboard permission land on a safe redirect instead.
+            return redirect()->route('dashboard');
         }
     }
 

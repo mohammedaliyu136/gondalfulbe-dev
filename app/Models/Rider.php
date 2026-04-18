@@ -10,11 +10,18 @@ class Rider extends Model
 {
 
 
+    protected $hidden = ['password'];
+
     protected $fillable   = [
         'rider_id',
         'name',
         'email',
+        'password',
+        'email_verified_at',
         'contact',
+        'license_no',
+        'vehicle_type',
+        'vehicle_registration',
         'bank_name',
         'image',
         'bank_account',

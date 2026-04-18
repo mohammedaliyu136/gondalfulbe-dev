@@ -54,7 +54,48 @@
             <div class="form-group">
                 {{Form::label('tax_number',__('NIN Number'),['class'=>'form-label'])}}
                 {{Form::text('tax_number',null,array('class'=>'form-control', 'placeholder'=>__('Enter Tax Number')))}}
-
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="form-group">
+                {{Form::label('gender',__('Gender'),['class'=>'form-label'])}}
+                {{Form::select('gender',[''=>__('Select Gender'),'M'=>__('Male'),'F'=>__('Female'),'Other'=>__('Other')],null,['class'=>'form-control'])}}
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="form-group">
+                {{Form::label('dob',__('Date of Birth'),['class'=>'form-label'])}}
+                {{Form::date('dob',null,['class'=>'form-control'])}}
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="form-group">
+                {{Form::label('gps_lat',__('GPS Latitude'),['class'=>'form-label'])}}
+                {{Form::text('gps_lat',null,['class'=>'form-control','placeholder'=>__('e.g. 9.0579')])}}
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="form-group">
+                {{Form::label('gps_lng',__('GPS Longitude'),['class'=>'form-label'])}}
+                {{Form::text('gps_lng',null,['class'=>'form-control','placeholder'=>__('e.g. 12.4898')])}}
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="form-group">
+                {{Form::label('photo',__('Profile Photo'),['class'=>'form-label'])}}
+                @if($vender->photo)
+                    <div class="mb-1"><img src="{{asset('uploads/farmers/'.$vender->photo)}}" width="60" class="rounded"></div>
+                @endif
+                {{Form::file('photo',['class'=>'form-control','accept'=>'image/*'])}}
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="form-group d-flex align-items-center mt-4">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="digital_payment_flag" name="digital_payment_flag" value="1"
+                        {{ $vender->digital_payment_flag ? 'checked' : '' }}>
+                    <label class="form-check-label" for="digital_payment_flag">{{__('Enable Digital Payments')}}</label>
+                </div>
             </div>
         </div>
         @if(!$customFields->isEmpty())

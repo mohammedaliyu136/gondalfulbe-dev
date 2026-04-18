@@ -1,0 +1,11 @@
+{
+    "name": "MilkCollection",
+    "alias": "milkcollection",
+    "description": "Daily milk intake recording with quality grading per MCC.",
+    "keywords": [],
+    "priority": 1,
+    "providers": [
+        "Modules\\MilkCollection\\Providers\\MilkCollectionServiceProvider"
+    ],
+    "files": []
+}

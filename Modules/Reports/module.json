@@ -1,0 +1,11 @@
+{
+    "name": "Reports",
+    "alias": "reports",
+    "description": "Role-based reporting, operational reports and executive dashboard.",
+    "keywords": [],
+    "priority": 8,
+    "providers": [
+        "Modules\\Reports\\Providers\\ReportsServiceProvider"
+    ],
+    "files": []
+}

@@ -1127,6 +1127,38 @@ public function processReversal(Request $request)
             //                 $this->registerPayment($paymentRegister, $purchaseId);
             // }
         }
-                
+
+    }
+
+    public function reconciliation()
+    {
+        if (! \Auth::user()->can('manage payslip')) {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
+
+        $creatorId = \Auth::user()->creatorId();
+
+        $batches = PaySlipFarmerBatch::where('created_by', $creatorId)
+            ->whereIn('status', [1, 2])
+            ->latest()
+            ->get()
+            ->map(function ($batch) {
+                $items          = PaySlipFarmerBatchItem::where('batch_id', $batch->batch_id)->get();
+                $expectedTotal  = $items->sum('net_salary');
+                $actualPaid     = $items->where('status', 'PAID')->sum('net_salary');
+                $failedCount    = $items->where('status', 'FAILED')->count();
+                $pendingCount   = $items->whereNotIn('status', ['PAID', 'FAILED'])->count();
+
+                return [
+                    'batch'          => $batch,
+                    'expected_total' => $expectedTotal,
+                    'actual_paid'    => $actualPaid,
+                    'failed_count'   => $failedCount,
+                    'pending_count'  => $pendingCount,
+                    'matched'        => abs($expectedTotal - $actualPaid) < 1,
+                ];
+            });
+
+        return view('payslip.farmer.reconciliation', compact('batches'));
     }
 }

@@ -1,0 +1,11 @@
+{
+    "name": "Extension",
+    "alias": "extension",
+    "description": "Extension agent activities, farmer training and field distribution tracking.",
+    "keywords": [],
+    "priority": 6,
+    "providers": [
+        "Modules\\Extension\\Providers\\ExtensionServiceProvider"
+    ],
+    "files": []
+}

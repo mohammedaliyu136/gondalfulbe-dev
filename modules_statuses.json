@@ -1,4 +1,12 @@
 {
     "LandingPage": true,
-    "Cooperatives": true
+    "Cooperatives": true,
+    "MilkCollection": true,
+    "Logistics": true,
+    "CenterOperations": true,
+    "Requisitions": true,
+    "OSS": true,
+    "Extension": true,
+    "SponsorPortal": true,
+    "Reports": true
 }

@@ -28,4 +28,5 @@ Route::group(['middleware' => ['auth', 'XSS', 'revalidate']], function () {
          ->name('cooperatives.farmers.export');
 
     Route::resource('cooperatives', CooperativesController::class);
+    Route::get('cooperatives/leader/dashboard', [CooperativesController::class, 'leaderDashboard'])->name('cooperatives.leader.dashboard');
 });

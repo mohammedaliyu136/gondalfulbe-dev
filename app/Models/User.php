@@ -41,6 +41,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'is_enable_login',
         'last_login_at',
         'created_by',
+        'assigned_mcc',
+        'assigned_community',
     ];
 
     protected $hidden = [
@@ -67,6 +69,16 @@ class User extends Authenticatable implements MustVerifyEmail
     public function authId()
     {
         return $this->id;
+    }
+
+    public function assignedMcc(): ?string
+    {
+        return $this->assigned_mcc ?: null;
+    }
+
+    public function assignedCommunity(): ?string
+    {
+        return $this->assigned_community ?: null;
     }
 
     public function creatorId()

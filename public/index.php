@@ -5,6 +5,10 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
+// Allow enough time for legitimate heavy operations (migrations, seeder calls, etc.)
+// The webserver default of 30s is too low for this application.
+ini_set('max_execution_time', 120);
+
 /*
 |--------------------------------------------------------------------------
 | Check If The Application Is Under Maintenance
