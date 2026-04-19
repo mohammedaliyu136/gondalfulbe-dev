@@ -265,11 +265,7 @@
                                                 $total = 0;
                                                 $totalAmount = 0;
 
-                                                function compare($a, $b)
-                                                {
-                                                    return strtotime($b['issue_date']) - strtotime($a['issue_date']);
-                                                }
-                                                usort($receivableSummaries, 'compare');
+                                                usort($receivableSummaries, fn($a, $b) => strtotime($b['issue_date']) - strtotime($a['issue_date']));
                                             @endphp
                                             @foreach ($receivableSummaries as $receivableSummary)
                                                 <tr>
@@ -365,11 +361,7 @@
                                                 $total = 0;
                                                 $totalQuantity = 0;
 
-                                                function compares($a, $b)
-                                                {
-                                                    return strtotime($b['issue_date']) - strtotime($a['issue_date']);
-                                                }
-                                                usort($receivableDetails, 'compares');
+                                                usort($receivableDetails, fn($a, $b) => strtotime($b['issue_date']) - strtotime($a['issue_date']));
                                             @endphp
                                             @foreach ($receivableDetails as $receivableDetail)
                                                 <tr>

@@ -246,11 +246,7 @@
                                                 $total = 0;
                                                 $totalAmount = 0;
 
-                                                function compare($a, $b)
-                                                {
-                                                    return strtotime($b['bill_date']) - strtotime($a['bill_date']);
-                                                }
-                                                usort($payableSummaries, 'compare');
+                                                usort($payableSummaries, fn($a, $b) => strtotime($b['bill_date']) - strtotime($a['bill_date']));
                                             @endphp
                                             @foreach ($payableSummaries as $payableSummary)
                                                 <tr>
@@ -350,11 +346,7 @@
                                                 $total = 0;
                                                 $totalQuantity = 0;
 
-                                                function compares($a, $b)
-                                                {
-                                                    return strtotime($b['bill_date']) - strtotime($a['bill_date']);
-                                                }
-                                                usort($payableDetails, 'compares');
+                                                usort($payableDetails, fn($a, $b) => strtotime($b['bill_date']) - strtotime($a['bill_date']));
                                             @endphp
                                             @foreach ($payableDetails as $payableDetail)
                                                 <tr>
