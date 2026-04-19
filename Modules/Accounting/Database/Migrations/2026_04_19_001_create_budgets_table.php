@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (!Schema::hasTable('budgets')) Schema::create('budgets', function (Blueprint $table) {
+        if (!Schema::hasTable('acct_budgets')) Schema::create('acct_budgets', function (Blueprint $table) {
             $table->id();
             $table->string('budget_id')->unique();
             $table->string('name');
@@ -22,5 +22,5 @@ return new class extends Migration
         });
     }
 
-    public function down(): void { Schema::dropIfExists('budgets'); }
+    public function down(): void { Schema::dropIfExists('acct_budgets'); }
 };

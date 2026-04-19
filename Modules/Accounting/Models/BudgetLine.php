@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class BudgetLine extends Model
 {
+    protected $table = 'acct_budget_lines';
+
     protected $fillable = [
         'budget_id', 'chart_account_id', 'description',
         'jan','feb','mar','apr','may','jun',

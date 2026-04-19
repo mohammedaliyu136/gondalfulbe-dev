@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Budget extends Model
 {
+    protected $table = 'acct_budgets';
+
     protected $fillable = [
         'budget_id', 'name', 'fiscal_year', 'start_date', 'end_date',
         'status', 'description', 'created_by',

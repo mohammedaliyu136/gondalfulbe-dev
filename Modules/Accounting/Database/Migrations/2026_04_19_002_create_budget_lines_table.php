@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (!Schema::hasTable('budget_lines')) Schema::create('budget_lines', function (Blueprint $table) {
+        if (!Schema::hasTable('acct_budget_lines')) Schema::create('acct_budget_lines', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('budget_id');
             $table->unsignedBigInteger('chart_account_id');
@@ -27,9 +27,9 @@ return new class extends Migration
             $table->decimal('dec', 15, 2)->default(0);
             $table->timestamps();
 
-            $table->foreign('budget_id')->references('id')->on('budgets')->onDelete('cascade');
+            $table->foreign('budget_id')->references('id')->on('acct_budgets')->onDelete('cascade');
         });
     }
 
-    public function down(): void { Schema::dropIfExists('budget_lines'); }
+    public function down(): void { Schema::dropIfExists('acct_budget_lines'); }
 };
