@@ -177,7 +177,7 @@
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-transparent border-0 pb-0"><h6 class="mb-0">{{ __('Quick Actions') }}</h6></div>
             <div class="card-body d-flex flex-column gap-2">
-                <a href="{{ route('invoice.create') }}"              class="btn btn-outline-success btn-sm text-start"><i class="ti ti-plus me-2"></i>{{ __('New Invoice') }}</a>
+                <a href="{{ route('invoice.create', 0) }}"            class="btn btn-outline-success btn-sm text-start"><i class="ti ti-plus me-2"></i>{{ __('New Invoice') }}</a>
                 <a href="{{ route('bill.create') }}"                 class="btn btn-outline-warning btn-sm text-start"><i class="ti ti-plus me-2"></i>{{ __('New Bill') }}</a>
                 <a href="{{ route('revenue.create') }}"              class="btn btn-outline-primary btn-sm text-start"><i class="ti ti-plus me-2"></i>{{ __('Record Revenue') }}</a>
                 <a href="{{ route('payment.create') }}"              class="btn btn-outline-danger btn-sm text-start"><i class="ti ti-plus me-2"></i>{{ __('Record Payment') }}</a>
