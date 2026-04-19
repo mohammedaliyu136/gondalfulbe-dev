@@ -332,6 +332,71 @@
                 @endif
                 <!--------------------- End Dashboard ----------------------------------->
 
+                <!--------------------- Start Accounting Module ---------------------->
+                @can('manage accounting')
+                <li class="dash-item dash-hasmenu {{ Request::segment(1) == 'accounting' ? 'active dash-trigger' : '' }}">
+                    <a href="#!" class="dash-link">
+                        <span class="dash-micon"><i class="ti ti-calculator"></i></span>
+                        <span class="dash-mtext">{{ __('Accounting') }}</span>
+                        <span class="dash-arrow"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+                    </a>
+                    <ul class="dash-submenu" style="display:none;">
+                        <li class="dash-item {{ request()->routeIs('accounting.dashboard') ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('accounting.dashboard') }}">{{ __('Finance Dashboard') }}</a>
+                        </li>
+                        <li class="dash-item {{ Request::segment(1)=='invoice' ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('invoice.index') }}">{{ __('Invoices (AR)') }}</a>
+                        </li>
+                        <li class="dash-item {{ Request::segment(1)=='bill' ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('bill.index') }}">{{ __('Bills (AP)') }}</a>
+                        </li>
+                        <li class="dash-item {{ Request::segment(1)=='revenue' ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('revenue.index') }}">{{ __('Revenue') }}</a>
+                        </li>
+                        <li class="dash-item {{ Request::segment(1)=='payment' ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('payment.index') }}">{{ __('Payments') }}</a>
+                        </li>
+                        <li class="dash-item {{ Request::segment(1)=='journal-entry' ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('journal-entry.index') }}">{{ __('Journal Entries') }}</a>
+                        </li>
+                        <li class="dash-item {{ Request::segment(1)=='chart-of-account' ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('chart-of-account.index') }}">{{ __('Chart of Accounts') }}</a>
+                        </li>
+                        <li class="dash-item {{ Request::segment(1)=='bank-account' ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('bank-account.index') }}">{{ __('Bank Accounts') }}</a>
+                        </li>
+                        @can('manage budget')
+                        <li class="dash-item {{ request()->routeIs('accounting.budget.*') ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('accounting.budget.index') }}">{{ __('Budgets') }}</a>
+                        </li>
+                        @endcan
+                        @can('manage reconciliation')
+                        <li class="dash-item {{ request()->routeIs('accounting.reconciliation.*') ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('accounting.reconciliation.index') }}">{{ __('Bank Reconciliation') }}</a>
+                        </li>
+                        @endcan
+                        @can('manage expense claim')
+                        <li class="dash-item {{ request()->routeIs('accounting.expense-claims.*') ? 'active' : '' }}">
+                            <a class="dash-link" href="{{ route('accounting.expense-claims.index') }}">{{ __('Expense Claims') }}</a>
+                        </li>
+                        @endcan
+                        <li class="dash-item dash-hasmenu">
+                            <a class="dash-link" href="#">{{ __('Reports') }}<span class="dash-arrow"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg></span></a>
+                            <ul class="dash-submenu" style="display:none;">
+                                <li class="dash-item"><a class="dash-link" href="{{ route('report.profit.loss') }}">{{ __('Profit & Loss') }}</a></li>
+                                <li class="dash-item"><a class="dash-link" href="{{ route('report.balance.sheet') }}">{{ __('Balance Sheet') }}</a></li>
+                                <li class="dash-item"><a class="dash-link" href="{{ route('trial.balance') }}">{{ __('Trial Balance') }}</a></li>
+                                <li class="dash-item"><a class="dash-link" href="{{ route('report.receivables') }}">{{ __('Receivables') }}</a></li>
+                                <li class="dash-item"><a class="dash-link" href="{{ route('report.payables') }}">{{ __('Payables') }}</a></li>
+                                <li class="dash-item"><a class="dash-link" href="{{ route('report.invoice.summary') }}">{{ __('Invoice Summary') }}</a></li>
+                                <li class="dash-item"><a class="dash-link" href="{{ route('report.bill.summary') }}">{{ __('Bill Summary') }}</a></li>
+                                <li class="dash-item"><a class="dash-link" href="{{ route('report.income.vs.expense.summary') }}">{{ __('Income VS Expense') }}</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                @endcan
+                <!--------------------- End Accounting Module ------------------------>
 
                 <!--------------------- Start HRM ----------------------------------->
 

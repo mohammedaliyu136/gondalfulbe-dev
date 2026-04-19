@@ -8,5 +8,6 @@
     "OSS": true,
     "Extension": true,
     "SponsorPortal": true,
-    "Reports": true
+    "Reports": true,
+    "Accounting": true
 }

@@ -1,0 +1,11 @@
+{
+    "name": "Accounting",
+    "alias": "accounting",
+    "description": "Finance workspace: budgets, bank reconciliation, expense claims, AR/AP management.",
+    "keywords": [],
+    "priority": 4,
+    "providers": [
+        "Modules\\Accounting\\Providers\\AccountingServiceProvider"
+    ],
+    "files": []
+}
