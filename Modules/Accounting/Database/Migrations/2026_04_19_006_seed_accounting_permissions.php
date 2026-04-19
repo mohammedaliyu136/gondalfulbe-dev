@@ -23,10 +23,13 @@ return new class extends Migration
             Permission::firstOrCreate(['name' => $name, 'guard_name' => 'web']);
         }
 
-        // Grant all accounting permissions to the Owner/Admin role
-        $adminRole = Role::where('name', 'Admin')->orWhere('name', 'admin')->first();
-        if ($adminRole) {
-            $adminRole->givePermissionTo($this->permissions);
+        // Grant all accounting permissions to admin/finance roles
+        $targets = ['super admin', 'Super Admin', 'system_admin', 'IT Admin', 'Admin', 'admin', 'company', 'accountant', 'Accountant II', 'finance_officer'];
+        foreach ($targets as $name) {
+            $role = Role::where('name', $name)->first();
+            if ($role) {
+                $role->givePermissionTo($this->permissions);
+            }
         }
     }
 
