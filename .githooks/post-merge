@@ -1,0 +1,3 @@
+#!/bin/sh
+# Regenerate module cache after pulling so new modules are visible
+php artisan optimize:clear --ansi 2>/dev/null || true
