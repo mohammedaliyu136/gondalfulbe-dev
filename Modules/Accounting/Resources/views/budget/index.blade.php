@@ -47,7 +47,6 @@
                             <button class="btn btn-xs btn-danger"><i class="ti ti-trash"></i></button>
                         </form>
                         @endcan
-                        @endif
                     </td>
                 </tr>
                 @empty
