@@ -37,7 +37,7 @@
                         <form method="POST" action="{{ route('accounting.budget.activate', $b->id) }}" class="d-inline">
                             @csrf <button class="btn btn-xs btn-success" title="{{ __('Activate') }}"><i class="ti ti-player-play"></i></button>
                         </form>
-                        @endcan
+                        @endif
                         @can('edit budget')
                         <a href="{{ route('accounting.budget.edit', $b->id) }}" class="btn btn-xs btn-info"><i class="ti ti-pencil"></i></a>
                         @endcan
