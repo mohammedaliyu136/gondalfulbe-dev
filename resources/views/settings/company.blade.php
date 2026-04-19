@@ -470,6 +470,10 @@
                                 class="list-group-item list-group-item-action border-0">{{ __('Biometric Attendance Settings') }}
                                 <div class="float-end"><i class="ti ti-chevron-right"></i></div>
                             </a> --}}
+                            <a href="#accounting-settings" id="accounting-settings-tab"
+                                class="list-group-item list-group-item-action border-0">{{ __('Accounting Settings') }}
+                                <div class="float-end"><i class="ti ti-chevron-right"></i></div>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -5427,6 +5431,78 @@
                             {{ Form::close() }}
                         </div>
                     </div> --}}
+
+                    {{-- Accounting Settings --}}
+                    <div id="accounting-settings" class="card">
+                        <div class="card-header">
+                            <h5>{{ __('Accounting Settings') }}</h5>
+                            <small class="text-muted">{{ __('Map system modules to Chart of Account entries for automatic GL posting.') }}</small>
+                        </div>
+                        {{ Form::open(['route' => 'accounting.settings', 'method' => 'post']) }}
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    {{ Form::label('default_salary_expense_account', __('Salary Expense Account'), ['class' => 'col-form-label']) }}
+                                    <select name="default_salary_expense_account" class="form-control">
+                                        <option value="">— {{ __('Select Account') }} —</option>
+                                        @foreach($chartAccounts as $acct)
+                                            <option value="{{ $acct->id }}"
+                                                {{ ($setting['default_salary_expense_account'] ?? '') == $acct->id ? 'selected' : '' }}>
+                                                {{ $acct->code }} – {{ $acct->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <small class="text-muted">{{ __('Dr when a payslip is paid.') }}</small>
+                                </div>
+
+                                <div class="col-md-6 form-group">
+                                    {{ Form::label('default_ops_expense_account', __('Operations Expense Account'), ['class' => 'col-form-label']) }}
+                                    <select name="default_ops_expense_account" class="form-control">
+                                        <option value="">— {{ __('Select Account') }} —</option>
+                                        @foreach($chartAccounts as $acct)
+                                            <option value="{{ $acct->id }}"
+                                                {{ ($setting['default_ops_expense_account'] ?? '') == $acct->id ? 'selected' : '' }}>
+                                                {{ $acct->code }} – {{ $acct->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <small class="text-muted">{{ __('Dr when a Center Operations cost is marked paid.') }}</small>
+                                </div>
+
+                                <div class="col-md-6 form-group">
+                                    {{ Form::label('default_oss_revenue_account', __('OSS Sales Revenue Account'), ['class' => 'col-form-label']) }}
+                                    <select name="default_oss_revenue_account" class="form-control">
+                                        <option value="">— {{ __('Select Account') }} —</option>
+                                        @foreach($chartAccounts as $acct)
+                                            <option value="{{ $acct->id }}"
+                                                {{ ($setting['default_oss_revenue_account'] ?? '') == $acct->id ? 'selected' : '' }}>
+                                                {{ $acct->code }} – {{ $acct->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <small class="text-muted">{{ __('Cr when a One Stop Shop sale is recorded.') }}</small>
+                                </div>
+
+                                <div class="col-md-6 form-group">
+                                    {{ Form::label('default_cash_account', __('Default Cash / Bank Account (GL)'), ['class' => 'col-form-label']) }}
+                                    <select name="default_cash_account" class="form-control">
+                                        <option value="">— {{ __('Select Account') }} —</option>
+                                        @foreach($chartAccounts as $acct)
+                                            <option value="{{ $acct->id }}"
+                                                {{ ($setting['default_cash_account'] ?? '') == $acct->id ? 'selected' : '' }}>
+                                                {{ $acct->code }} – {{ $acct->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <small class="text-muted">{{ __('Used as the Cr/Dr cash leg for Center Operations and OSS.') }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-end">
+                            <button type="submit" class="btn btn-primary">{{ __('Save Accounting Settings') }}</button>
+                        </div>
+                        {{ Form::close() }}
+                    </div>
 
                 </div>
             </div>

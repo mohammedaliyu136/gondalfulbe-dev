@@ -9,6 +9,7 @@ use Modules\OSS\Models\OssProduct;
 use Modules\OSS\Models\OssSale;
 use Modules\OSS\Models\OssSaleItem;
 use App\Models\Vender;
+use App\Services\AccountingService;
 
 class OssSalesController extends Controller
 {
@@ -102,6 +103,9 @@ class OssSalesController extends Controller
                 'created_by'     => Auth::user()->creatorId(),
             ]);
         }
+
+        // Post to GL: Dr Cash/AR / Cr Sales Revenue
+        AccountingService::postOssSale((float) $total, $sale->id, $request->date);
 
         return redirect()->route('oss-sales.show', $sale->id)->with('success', __('Sale recorded successfully.'));
     }

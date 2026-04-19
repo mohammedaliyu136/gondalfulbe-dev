@@ -445,6 +445,7 @@ Route::group(['middleware' => ['verified']], function () {
 
             Route::post('company-settings', [SystemController::class, 'saveCompanySettings'])->name('company.settings');
             Route::post('system-settings', [SystemController::class, 'saveSystemSettings'])->name('system.settings');
+            Route::post('accounting-settings', [SystemController::class, 'saveAccountingSettings'])->name('accounting.settings');
             Route::post('zoom-settings', [SystemController::class, 'saveZoomSettings'])->name('zoom.settings');
             Route::post('tracker-settings', [SystemController::class, 'saveTrackerSettings'])->name('tracker.settings');
             Route::post('slack-settings', [SystemController::class, 'saveSlackSettings'])->name('slack.settings');

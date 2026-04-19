@@ -7,6 +7,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Modules\CenterOperations\Models\CenterCost;
+use App\Services\AccountingService;
 
 class CenterOperationsController extends Controller
 {
@@ -222,6 +223,10 @@ class CenterOperationsController extends Controller
 
         $cost = CenterCost::where('created_by', Auth::user()->creatorId())->findOrFail($id);
         $cost->update(['status' => 'paid', 'paid_by' => Auth::id(), 'paid_at' => now()]);
+
+        // Post to GL: Dr Operating Expense / Cr Cash
+        AccountingService::postCenterCost((float) $cost->amount, $cost->id, now()->toDateString());
+
         return redirect()->route('center-costs.show', $id)->with('success', __('Cost entry marked as paid.'));
     }
 

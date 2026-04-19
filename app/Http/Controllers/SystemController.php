@@ -346,6 +346,38 @@ class SystemController extends Controller
         }
     }
 
+    public function saveAccountingSettings(Request $request)
+    {
+        if (! \Auth::user()->can('manage company settings')) {
+            return redirect()->back()->with('error', 'Permission denied.');
+        }
+
+        $keys = [
+            'default_salary_expense_account',
+            'default_ops_expense_account',
+            'default_oss_revenue_account',
+            'default_cash_account',
+        ];
+
+        $createdBy = \Auth::user()->creatorId();
+        foreach ($keys as $key) {
+            \DB::insert(
+                'insert into settings (`value`, `name`, `created_by`, `created_at`, `updated_at`)
+                 values (?, ?, ?, ?, ?)
+                 ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)',
+                [
+                    $request->input($key, ''),
+                    $key,
+                    $createdBy,
+                    now(),
+                    now(),
+                ]
+            );
+        }
+
+        return redirect()->back()->with('success', __('Accounting settings saved successfully.'));
+    }
+
     public function saveZoomSettings(Request $request)
     {
         $post = $request->all();
@@ -563,6 +595,11 @@ class SystemController extends Controller
 
             $post = $request->all();
 
+            $chartAccounts = \App\Models\ChartOfAccount::where('created_by', \Auth::user()->creatorId())
+                ->where('is_enabled', 1)
+                ->orderBy('code')
+                ->get();
+
             return view('settings.company', compact(
                 'setting',
                 'company_payment_setting',
@@ -587,6 +624,7 @@ class SystemController extends Controller
                 'noclangName',
                 'emailSetting',
                 'comSetting',
+                'chartAccounts',
             ));
         } else {
             return redirect()->back()->with('error', 'Permission denied.');

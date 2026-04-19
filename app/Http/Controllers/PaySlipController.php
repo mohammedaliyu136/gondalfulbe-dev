@@ -26,6 +26,8 @@ use Illuminate\Support\Facades\Session;
 use App\Mail\OTPSalaryMail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use App\Services\AccountingService;
+use App\Models\BankAccount;
 
 class PaySlipController extends Controller
 {
@@ -337,6 +339,17 @@ class PaySlipController extends Controller
         {
             $employeePayslip->status = 1;
             $employeePayslip->save();
+
+            // Post payroll to GL: Dr Salary Expense / Cr Bank Account
+            $bankAccount = BankAccount::find($account->account);
+            if ($bankAccount && $bankAccount->chart_account_id) {
+                AccountingService::postPayroll(
+                    (float) $employeePayslip->net_payble,
+                    $employeePayslip->id,
+                    $bankAccount->chart_account_id,
+                    date('Y-m-d')
+                );
+            }
 
             return redirect()->route('payslip.index')->with('success', __('Payslip Payment successfully.'));
         }

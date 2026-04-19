@@ -251,6 +251,12 @@ class Utility extends Model
             'chat_gpt_model'=>'',
             "ip_restrict" => "off",
 
+            // Default chart-of-account mappings for automated GL posting
+            'default_salary_expense_account' => '',
+            'default_ops_expense_account'    => '',
+            'default_oss_revenue_account'    => '',
+            'default_cash_account'           => '',
+
             'mail_driver' => '',
             'mail_host' => '',
             'mail_port' => '',
