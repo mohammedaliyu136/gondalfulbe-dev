@@ -1,64 +1,95 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Gondal ERP
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A multi-module ERP built on Laravel 11 covering HRM, Accounting, Milk Collection, Logistics, Cooperatives, OSS, Extension, Center Operations, and more.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Requirements
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- PHP 8.2+
+- MySQL 8+
+- Composer
+- Node.js & NPM
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Installation
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```bash
+# 1. Clone the repository
+git clone https://github.com/mohammedaliyu136/gondalfulbe-dev.git
+cd gondalfulbe-dev
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+# 2. Install PHP dependencies
+composer install
 
-## Laravel Sponsors
+# 3. Copy environment file and set your DB credentials
+cp .env.example .env
+php artisan key:generate
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+# 4. Run migrations
+php artisan migrate
 
-### Premium Partners
+# 5. Install and build frontend assets
+npm install && npm run build
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+---
 
-## Contributing
+## After Pulling Updates
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+> **Important:** This project uses Laravel Modules. The module registry is cached locally and is not tracked by git.
+> After every `git pull`, run the following to regenerate the cache so all modules are visible:
 
-## Code of Conduct
+```bash
+php artisan optimize:clear
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### One-time setup — auto-run on pull
 
-## Security Vulnerabilities
+To have this run automatically after every `git pull`:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+git config core.hooksPath .githooks
+```
+
+After that, `php artisan optimize:clear` will run automatically whenever you pull.
+
+---
+
+## Modules
+
+| Module | Description |
+|---|---|
+| Accounting | Finance dashboard, budgets, bank reconciliation, expense claims |
+| HRM | Employees, payroll, leaves, attendance, appraisals |
+| Project | Projects, tasks, milestones, timesheets |
+| Milk Collection | MCC operations, payments to farmers and officers |
+| Logistics | Riders, trips, deliveries |
+| Cooperatives | Cooperative management |
+| Center Operations | MCC cost tracking and approvals |
+| OSS | Agricultural input sales and distribution |
+| Extension | Field agent activity tracking |
+| Requisitions | Internal procurement requisitions |
+| Reports | Financial and operational reports |
+
+---
+
+## Useful Artisan Commands
+
+```bash
+# List all modules and their status
+php artisan module:list
+
+# Run only module migrations
+php artisan migrate --path=Modules/{ModuleName}/Database/Migrations
+
+# Clear all caches (routes, views, config, modules)
+php artisan optimize:clear
+```
+
+---
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Proprietary — Gondal Group.
