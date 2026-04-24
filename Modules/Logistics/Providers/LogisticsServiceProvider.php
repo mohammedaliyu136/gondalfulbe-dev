@@ -12,7 +12,7 @@ class LogisticsServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerViews();
-        $this->loadMigrationsFrom(module_path($this->moduleName, '/Database/Migrations'));
+        $this->loadMigrationsFrom($this->modulePath('Database/Migrations'));
     }
 
     public function register(): void
@@ -24,9 +24,14 @@ class LogisticsServiceProvider extends ServiceProvider
     protected function registerViews(): void
     {
         $viewPath   = resource_path('views/modules/' . $this->moduleNameLower);
-        $sourcePath = module_path($this->moduleName, '/Resources/views');
+        $sourcePath = $this->modulePath('Resources/views');
         $this->publishes([$sourcePath => $viewPath], ['views', $this->moduleNameLower . '-module-views']);
         $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), $this->moduleNameLower);
+    }
+
+    private function modulePath(string $path = ''): string
+    {
+        return dirname(__DIR__) . ($path !== '' ? DIRECTORY_SEPARATOR . ltrim($path, DIRECTORY_SEPARATOR) : '');
     }
 
     private function getPublishableViewPaths(): array

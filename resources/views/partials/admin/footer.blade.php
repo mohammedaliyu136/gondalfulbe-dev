@@ -114,19 +114,24 @@
     }
 
     var custthemebg = document.querySelector("#cust-theme-bg");
-    custthemebg.addEventListener("click", function () {
-        if (custthemebg.checked) {
-            document.querySelector(".dash-sidebar").classList.add("transprent-bg");
-            document
-                .querySelector(".dash-header:not(.dash-mob-header)")
-                .classList.add("transprent-bg");
-        } else {
-            document.querySelector(".dash-sidebar").classList.remove("transprent-bg");
-            document
-                .querySelector(".dash-header:not(.dash-mob-header)")
-                .classList.remove("transprent-bg");
-        }
-    });
+    if (custthemebg) {
+        custthemebg.addEventListener("click", function () {
+            var sidebar = document.querySelector(".dash-sidebar");
+            var header = document.querySelector(".dash-header:not(.dash-mob-header)");
+
+            if (!sidebar || !header) {
+                return;
+            }
+
+            if (custthemebg.checked) {
+                sidebar.classList.add("transprent-bg");
+                header.classList.add("transprent-bg");
+            } else {
+                sidebar.classList.remove("transprent-bg");
+                header.classList.remove("transprent-bg");
+            }
+        });
+    }
 
 
 
@@ -140,5 +145,4 @@
         }
     }
 </script>
-
 

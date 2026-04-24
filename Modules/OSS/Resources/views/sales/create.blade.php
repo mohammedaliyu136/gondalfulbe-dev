@@ -67,7 +67,7 @@
                                         <select name="items[0][product_id]" class="form-select form-select-sm product-sel" required>
                                             <option value="">{{ __('Select') }}</option>
                                             @foreach($products as $p)
-                                            <option value="{{ $p->id }}" data-price="{{ $p->unit_price }}">{{ $p->name }} ({{ $p->unit }})</option>
+                                            <option value="{{ $p->id }}" data-price="{{ $p->price }}">{{ $p->name }} ({{ $p->unit }})</option>
                                             @endforeach
                                         </select>
                                     </td>

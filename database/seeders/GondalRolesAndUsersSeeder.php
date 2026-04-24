@@ -179,6 +179,66 @@ class GondalRolesAndUsersSeeder extends Seeder
         ], $extensionAgentRole);
 
         // ────────────────────────────────────────────────────────────────────
+        // 6B. MCC OFFICER
+        // ────────────────────────────────────────────────────────────────────
+        $mccOfficerRole = $this->upsertRole('mcc_officer', $companyId, [
+            'manage milk collection',
+            'create milk collection',
+            'edit milk collection',
+            'manage vender',
+            'create vender',
+            'edit vender',
+            'view reports',
+        ]);
+
+        $this->upsertUser([
+            'name'         => 'Demo MCC Officer',
+            'email'        => 'mcc.officer@gondal.test',
+            'type'         => 'mcc_officer',
+            'password'     => $password,
+            'created_by'   => $companyId,
+            'assigned_mcc' => 'Mayo',
+        ], $mccOfficerRole);
+
+        // ────────────────────────────────────────────────────────────────────
+        // 6C. LOGISTICS LEAD
+        // ────────────────────────────────────────────────────────────────────
+        $logisticsLeadRole = $this->upsertRole('logistics_lead', $companyId, [
+            'manage logistics',
+            'create logistics trip',
+            'edit logistics trip',
+            'manage milk collection',
+            'view reports',
+        ]);
+
+        $this->upsertUser([
+            'name'       => 'Demo Logistics Lead',
+            'email'      => 'logistics.lead@gondal.test',
+            'type'       => 'logistics_lead',
+            'password'   => $password,
+            'created_by' => $companyId,
+        ], $logisticsLeadRole);
+
+        // ────────────────────────────────────────────────────────────────────
+        // 6D. OSS AGENT
+        // ────────────────────────────────────────────────────────────────────
+        $ossAgentRole = $this->upsertRole('oss_agent', $companyId, [
+            'manage oss products',
+            'create oss products',
+            'edit oss products',
+            'manage vender',
+            'view reports',
+        ]);
+
+        $this->upsertUser([
+            'name'       => 'Demo OSS Agent',
+            'email'      => 'oss.agent@gondal.test',
+            'type'       => 'oss_agent',
+            'password'   => $password,
+            'created_by' => $companyId,
+        ], $ossAgentRole);
+
+        // ────────────────────────────────────────────────────────────────────
         // 7. FINANCE OFFICER
         // ────────────────────────────────────────────────────────────────────
         $financeOfficerRole = $this->upsertRole('finance_officer', $companyId, [
@@ -201,6 +261,66 @@ class GondalRolesAndUsersSeeder extends Seeder
             'password'   => $password,
             'created_by' => $companyId,
         ], $financeOfficerRole);
+
+        // ────────────────────────────────────────────────────────────────────
+        // 7B. ACCOUNTANT
+        // ────────────────────────────────────────────────────────────────────
+        $accountantRole = $this->upsertRole('accountant_gondal', $companyId, [
+            'manage payment farmers',
+            'generate bulk payment farmers',
+            'view reports',
+            'manage reports',
+            'manage center operations',
+            'approve center cost',
+            'manage requisitions',
+            'approve requisition',
+        ]);
+
+        $this->upsertUser([
+            'name'       => 'Demo Accountant',
+            'email'      => 'accountant.gondal@gondal.test',
+            'type'       => 'accountant_gondal',
+            'password'   => $password,
+            'created_by' => $companyId,
+        ], $accountantRole);
+
+        // ────────────────────────────────────────────────────────────────────
+        // 7C. HR MANAGER
+        // ────────────────────────────────────────────────────────────────────
+        $hrManagerRole = $this->upsertRole('hr_manager', $companyId, [
+            'manage user',
+            'create user',
+            'edit user',
+            'view reports',
+        ]);
+
+        $this->upsertUser([
+            'name'       => 'Demo HR Manager',
+            'email'      => 'hr.manager@gondal.test',
+            'type'       => 'hr_manager',
+            'password'   => $password,
+            'created_by' => $companyId,
+        ], $hrManagerRole);
+
+        // ────────────────────────────────────────────────────────────────────
+        // 7D. INTERNAL AUDITOR
+        // ────────────────────────────────────────────────────────────────────
+        $internalAuditorRole = $this->upsertRole('internal_auditor', $companyId, [
+            'view reports',
+            'manage reports',
+            'view executive dashboard',
+            'manage milk collection',
+            'manage logistics',
+            'manage center operations',
+        ]);
+
+        $this->upsertUser([
+            'name'       => 'Demo Internal Auditor',
+            'email'      => 'internal.auditor@gondal.test',
+            'type'       => 'internal_auditor',
+            'password'   => $password,
+            'created_by' => $companyId,
+        ], $internalAuditorRole);
 
         // ────────────────────────────────────────────────────────────────────
         // 8. EXECUTIVE DIRECTOR
@@ -384,7 +504,13 @@ class GondalRolesAndUsersSeeder extends Seeder
                 ['Center Manager',       'center.manager@gondal.test',   'Gondal@2026'],
                 ['Component Lead',       'component.lead@gondal.test',   'Gondal@2026'],
                 ['Extension Agent',      'extension.agent@gondal.test',  'Gondal@2026'],
+                ['MCC Officer',          'mcc.officer@gondal.test',      'Gondal@2026'],
+                ['Logistics Lead',       'logistics.lead@gondal.test',   'Gondal@2026'],
+                ['OSS Agent',            'oss.agent@gondal.test',        'Gondal@2026'],
                 ['Finance Officer',      'finance.officer@gondal.test',  'Gondal@2026'],
+                ['Accountant',           'accountant.gondal@gondal.test','Gondal@2026'],
+                ['HR Manager',           'hr.manager@gondal.test',       'Gondal@2026'],
+                ['Internal Auditor',     'internal.auditor@gondal.test', 'Gondal@2026'],
                 ['Executive Director',   'executive.director@gondal.test','Gondal@2026'],
                 ['Board Member',         'board.member@gondal.test',     'Gondal@2026'],
                 ['System Admin',         'sys.admin@gondal.test',        'Gondal@2026'],

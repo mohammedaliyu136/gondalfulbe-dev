@@ -805,29 +805,32 @@ public function processReversal(Request $request)
     
     public function validateBankAccount(Request $request)
     {
-            $monnify = new Monnify();
-    
-            // Call Monnify bulk payment authorization
-            $result = $monnify->validateBankAccount($request->bankCode, $request->accountNumber);
-            $response = $result->getData();
-            if ($response->details->requestSuccessful && $response->details->responseCode === '0') {
+        $monnify = new Monnify();
+
+        $result = $monnify->validateBankAccount($request->bankCode, $request->accountNumber);
+        $response = $result->getData();
+
+        if (
+            isset($response->details) &&
+            isset($response->details->requestSuccessful) &&
+            $response->details->requestSuccessful &&
+            ($response->details->responseCode ?? null) === '0'
+        ) {
             $responseBody = $response->details->responseBody;
 
             return response()->json([
                 'success' => true,
                 'data' => [
-                    'accountName' => $responseBody->accountName
-                ]
+                    'accountName' => $responseBody->accountName ?? '',
+                ],
             ], 200);
-            
-            } else {
-                // Handle Monnify-specific error response
-                return response()->json([
-                    'success' => false,
-                    'message' => $response->details->responseMessage,
-                    'details' => $response->responseBody ?? []
-                ], 400);
-            }
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => $response->message ?? __('Automatic account validation is unavailable. Enter the account name manually.'),
+            'details' => $response->details ?? null,
+        ], 422);
     }
     
     public function updatePaylipItems($batchRef, $status)

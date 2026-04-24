@@ -9,7 +9,7 @@
         </a>
         <span class="badge bg-{{ $project->status === 'Active' ? 'success' : 'secondary' }}">{{ $project->status }}</span>
     </div>
-    <a href="{{ route('sponsor.project.report', $project->id) }}" class="btn btn-sm btn-outline-primary">
+    <a href="{{ route('sponsor.report', $project->id) }}" class="btn btn-sm btn-outline-primary">
         <i class="ti ti-file-download"></i> {{ __('Download Report') }}
     </a>
 </div>

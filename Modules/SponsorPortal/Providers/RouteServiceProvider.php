@@ -28,7 +28,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::middleware('web')
             ->namespace($this->moduleNamespace)
-            ->group(module_path('SponsorPortal', '/Routes/web.php'));
+            ->group($this->modulePath('Routes/web.php'));
     }
 
     protected function mapApiRoutes(): void
@@ -36,6 +36,11 @@ class RouteServiceProvider extends ServiceProvider
         Route::prefix('api')
             ->middleware('api')
             ->namespace($this->moduleNamespace . '\\Api')
-            ->group(module_path('SponsorPortal', '/Routes/api.php'));
+            ->group($this->modulePath('Routes/api.php'));
+    }
+
+    private function modulePath(string $path = ''): string
+    {
+        return dirname(__DIR__) . ($path !== '' ? DIRECTORY_SEPARATOR . ltrim($path, DIRECTORY_SEPARATOR) : '');
     }
 }

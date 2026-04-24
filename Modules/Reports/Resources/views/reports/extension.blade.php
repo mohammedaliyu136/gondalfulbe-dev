@@ -30,7 +30,7 @@
                 </div>
                 <div class="col-md-3">
                     <label class="form-label" style="font-size:.82rem">{{ __('Agent') }}</label>
-                    <select name="agent" class="form-control form-control-sm">
+                    <select name="agent_id" class="form-control form-control-sm">
                         <option value="">{{ __('All Agents') }}</option>
                         @foreach($agents as $a)
                             <option value="{{ $a->id }}" {{ (string)$agentId === (string)$a->id ? 'selected' : '' }}>
@@ -110,10 +110,12 @@
                     <tbody>
                         @foreach($agentsBelow as $a)
                             <tr>
-                                <td style="font-size:.85rem">{{ $a->agent_name ?? 'Unknown' }}</td>
-                                <td style="font-size:.85rem">{{ $a->mcc_name ?? '—' }}</td>
-                                <td class="text-end" style="font-size:.85rem">{{ $a->visit_count }}</td>
-                                <td class="text-end" style="font-size:.85rem">{{ $a->days_active }}</td>
+                                <td style="font-size:.85rem">{{ $a->name ?? 'Unknown' }}</td>
+                                <td style="font-size:.85rem">{{ collect($a->assigned_centers ?? [])->implode(', ') ?: '—' }}</td>
+                                <td class="text-end" style="font-size:.85rem">{{ $a->visits_this_week ?? 0 }}</td>
+                                <td class="text-end" style="font-size:.85rem">
+                                    {{ $a->visits()->whereBetween('visit_date', [now()->startOfWeek(), now()->endOfWeek()])->distinct()->count('visit_date') }}
+                                </td>
                                 <td>
                                     <span class="badge bg-danger" style="font-size:.72rem">Below Target</span>
                                 </td>
@@ -198,9 +200,11 @@
                     @forelse($visits as $visit)
                         <tr>
                             <td style="font-size:.82rem">{{ \Carbon\Carbon::parse($visit->visit_date)->format('d M Y') }}</td>
-                            <td style="font-size:.85rem">{{ $visit->agent_name ?? '—' }}</td>
-                            <td style="font-size:.82rem; color:#6c757d">{{ $visit->mcc_name ?? '—' }}</td>
-                            <td style="font-size:.82rem">{{ $visit->topic ?? '—' }}</td>
+                            <td style="font-size:.85rem">{{ $visit->agent?->name ?? '—' }}</td>
+                            <td style="font-size:.82rem; color:#6c757d">{{ $visit->center ?? '—' }}</td>
+                            <td style="font-size:.82rem">
+                                {{ optional($visit->topics->first())->topic ?? '—' }}
+                            </td>
                             <td>
                                 <span class="badge bg-light text-dark border" style="font-size:.72rem">
                                     {{ ucfirst($visit->visit_type ?? 'visit') }}

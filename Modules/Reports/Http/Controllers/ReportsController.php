@@ -270,17 +270,29 @@ class ReportsController extends Controller
 
         $creatorId = Auth::user()->creatorId();
         $reqs      = collect();
-        $summary   = ['total' => 0, 'pending' => 0, 'approved' => 0, 'total_value' => 0];
+        $summary   = [
+            'total' => 0,
+            'pending_count' => 0,
+            'approved_count' => 0,
+            'paid_count' => 0,
+            'rejected_count' => 0,
+            'avg_approval_hours' => 0,
+            'total_value' => 0,
+        ];
 
         if (class_exists(\Modules\Requisitions\Models\Requisition::class)) {
             $r     = \Modules\Requisitions\Models\Requisition::class;
             $query = $r::with('requester')->where('created_by', $creatorId);
             if ($request->filled('status')) $query->where('status', $request->status);
             if ($request->filled('center')) $query->where('center', $request->center);
+            if ($request->filled('date_from')) $query->whereDate('request_date', '>=', $request->date_from);
+            if ($request->filled('date_to')) $query->whereDate('request_date', '<=', $request->date_to);
             $reqs                = $query->orderByDesc('request_date')->paginate(50)->withQueryString();
             $summary['total']    = $r::where('created_by', $creatorId)->count();
-            $summary['pending']  = $r::where('created_by', $creatorId)->where('status', 'pending')->count();
-            $summary['approved'] = $r::where('created_by', $creatorId)->whereIn('status', ['approved', 'paid', 'completed'])->count();
+            $summary['pending_count']  = $r::where('created_by', $creatorId)->where('status', 'pending')->count();
+            $summary['approved_count'] = $r::where('created_by', $creatorId)->whereIn('status', ['approved', 'manager_approved', 'supervisor_approved'])->count();
+            $summary['paid_count']     = $r::where('created_by', $creatorId)->whereIn('status', ['paid', 'completed'])->count();
+            $summary['rejected_count'] = $r::where('created_by', $creatorId)->where('status', 'rejected')->count();
             $summary['total_value'] = $r::where('created_by', $creatorId)->sum('total_estimated_cost');
         }
 
@@ -288,8 +300,16 @@ class ReportsController extends Controller
         $statuses = ['pending', 'supervisor_approved', 'manager_approved', 'approved', 'rejected', 'paid', 'completed'];
         $dateFrom = $request->date_from ?? '';
         $dateTo   = $request->date_to   ?? '';
+        $centers  = $mccs;
+        $center   = $request->center ?? '';
+        $status   = $request->status ?? '';
+        $requisitions = $reqs;
+        $summary = (object) $summary;
 
-        return view('reports::reports.requisitions', compact('reqs', 'summary', 'mccs', 'statuses', 'dateFrom', 'dateTo'));
+        return view('reports::reports.requisitions', compact(
+            'reqs', 'summary', 'mccs', 'statuses', 'dateFrom', 'dateTo',
+            'centers', 'center', 'status', 'requisitions'
+        ));
     }
 
     public function extensionReport(Request $request)
@@ -364,6 +384,7 @@ class ReportsController extends Controller
         $center         = $request->center   ?? '';
         $dateFrom       = $request->date_from ?? '';
         $dateTo         = $request->date_to   ?? '';
+        $agentId        = $request->agent_id ?? $request->agent ?? '';
         $farmersReached = $summary['farmers_reached'];
         $eventsHeld     = $summary['events'];
         $agentsBelow    = $belowTargetAgents;
@@ -385,7 +406,7 @@ class ReportsController extends Controller
             'visitsPerAgent', 'topicCoverage', 'farmerParticipation',
             'belowTargetAgents', 'ossSalesPerAgent', 'outstandingCredit',
             'centers', 'center', 'dateFrom', 'dateTo',
-            'farmersReached', 'eventsHeld', 'agentsBelow', 'agentStats'
+            'farmersReached', 'eventsHeld', 'agentsBelow', 'agentStats', 'agentId'
         ));
     }
 
@@ -398,13 +419,23 @@ class ReportsController extends Controller
         $creatorId = Auth::user()->creatorId();
         $products  = collect();
         $lowStock  = collect();
+        $transactions = collect();
 
         if (class_exists(\Modules\OSS\Models\OssProduct::class)) {
             $products = \Modules\OSS\Models\OssProduct::where('created_by', $creatorId)->active()->get();
             $lowStock = $products->filter(fn($p) => $p->isLowStock());
         }
 
-        return view('reports::reports.inventory', compact('products', 'lowStock'));
+        if (class_exists(\Modules\OSS\Models\OssInventory::class)) {
+            $transactions = \Modules\OSS\Models\OssInventory::with('product')
+                ->where('created_by', $creatorId)
+                ->latest('date')
+                ->latest('id')
+                ->limit(20)
+                ->get();
+        }
+
+        return view('reports::reports.inventory', compact('products', 'lowStock', 'transactions'));
     }
 
     public function agentDistributionReport(Request $request)
@@ -415,16 +446,61 @@ class ReportsController extends Controller
 
         $creatorId   = Auth::user()->creatorId();
         $allocations = collect();
+        $agentSummary = collect();
+        $agentId = $request->agent_id ?? $request->agent ?? '';
 
         if (class_exists(\Modules\OSS\Models\OssAgentAllocation::class)) {
-            $allocations = \Modules\OSS\Models\OssAgentAllocation::with('product', 'agent')
-                ->where('created_by', $creatorId)
-                ->orderByDesc('allocated_date')->paginate(50)->withQueryString();
+            $query = \Modules\OSS\Models\OssAgentAllocation::with('product', 'agent')
+                ->where('created_by', $creatorId);
+
+            if ($agentId) {
+                $query->where('agent_id', $agentId);
+            }
+
+            if ($request->filled('date_from')) {
+                $query->whereDate('allocated_date', '>=', $request->date_from);
+            }
+
+            if ($request->filled('date_to')) {
+                $query->whereDate('allocated_date', '<=', $request->date_to);
+            }
+
+            $allocations = $query->orderByDesc('allocated_date')->get();
+
+            $agentSummary = $allocations
+                ->groupBy(fn($row) => $row->agent_id . ':' . $row->product_id)
+                ->map(function ($group) {
+                    $first = $group->first();
+                    $allocated = (float) $group->sum('quantity_allocated');
+                    $sold = (float) \Modules\OSS\Models\OssAgentSaleItem::where('product_id', $first->product_id)
+                        ->whereHas('agentSale', fn($q) => $q->where('agent_id', $first->agent_id))
+                        ->sum('quantity');
+                    $returned = class_exists(\Modules\OSS\Models\OssAgentReturn::class)
+                        ? (float) \Modules\OSS\Models\OssAgentReturn::where('agent_id', $first->agent_id)
+                            ->where('product_id', $first->product_id)
+                            ->sum('quantity_returned')
+                        : 0.0;
+
+                    return (object) [
+                        'agent_name' => $first->agent?->name ?? 'Unknown',
+                        'product_name' => $first->product?->name ?? '—',
+                        'allocated' => $allocated,
+                        'sold' => $sold,
+                        'returned' => $returned,
+                        'balance' => max(0, $allocated - $sold - $returned),
+                    ];
+                })
+                ->values();
         }
 
         $dateFrom = $request->date_from ?? '';
         $dateTo   = $request->date_to   ?? '';
+        $agents = class_exists(\App\Models\User::class)
+            ? \App\Models\User::where('created_by', $creatorId)->orderBy('name')->get()
+            : collect();
 
-        return view('reports::reports.agent-distribution', compact('allocations', 'dateFrom', 'dateTo'));
+        return view('reports::reports.agent-distribution', compact(
+            'allocations', 'dateFrom', 'dateTo', 'agents', 'agentId', 'agentSummary'
+        ));
     }
 }

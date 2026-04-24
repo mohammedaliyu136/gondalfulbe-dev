@@ -53,7 +53,7 @@
         <div class="col-lg-4 col-md-4 col-sm-6">
             <div class="form-group">
                 {{Form::label('account_name',__('Account Name'),['class'=>'form-label'])}}<x-required></x-required>
-                {{Form::text('account_name',null,array('class'=>'form-control' , 'required'=>'required', 'readonly'=>'readonly', 'placeholder'=>__('Not set')))}}
+                {{Form::text('account_name',null,array('class'=>'form-control' , 'required'=>'required', 'placeholder'=>__('Enter Account Name or validate automatically')))}}
             </div>
         </div>
         @if(!$customFields->isEmpty())
@@ -194,4 +194,3 @@ $(document).ready(function() {
     });
 });
 </script>
-

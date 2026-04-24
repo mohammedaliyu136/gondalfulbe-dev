@@ -10,6 +10,23 @@ use Modules\OSS\Models\OssInventory;
 
 class OssProductsController extends Controller
 {
+    private function normalizeCategory(?string $category): string
+    {
+        $category = trim((string) $category);
+
+        if ($category === '') {
+            return 'Other';
+        }
+
+        foreach (OssProduct::CATEGORIES as $allowedCategory) {
+            if (strcasecmp($allowedCategory, $category) === 0) {
+                return $allowedCategory;
+            }
+        }
+
+        return 'Other';
+    }
+
     public function index()
     {
         if (! Auth::user()->can('manage oss products')) {
@@ -38,9 +55,13 @@ class OssProductsController extends Controller
             return redirect()->back()->with('error', __('Permission denied.'));
         }
 
+        $request->merge([
+            'price' => $request->input('price', $request->input('unit_price')),
+        ]);
+
         $validator = \Validator::make($request->all(), [
             'name'          => 'required|string|max:255',
-            'category'      => 'required|in:' . implode(',', OssProduct::CATEGORIES),
+            'category'      => 'nullable|string|max:30',
             'unit'          => 'required|string|max:30',
             'price'         => 'required|numeric|min:0',
             'reorder_level' => 'nullable|numeric|min:0',
@@ -53,7 +74,7 @@ class OssProductsController extends Controller
         OssProduct::create([
             'product_code'  => OssProduct::generateProductCode(),
             'name'          => $request->name,
-            'category'      => $request->category,
+            'category'      => $this->normalizeCategory($request->category),
             'unit'          => $request->unit,
             'price'         => $request->price,
             'reorder_level' => $request->reorder_level ?? 0,
@@ -86,9 +107,13 @@ class OssProductsController extends Controller
 
         $product = OssProduct::where('created_by', Auth::user()->creatorId())->findOrFail($id);
 
+        $request->merge([
+            'price' => $request->input('price', $request->input('unit_price')),
+        ]);
+
         $validator = \Validator::make($request->all(), [
             'name'     => 'required|string|max:255',
-            'category' => 'required|in:' . implode(',', OssProduct::CATEGORIES),
+            'category' => 'nullable|string|max:30',
             'unit'     => 'required|string|max:30',
             'price'    => 'required|numeric|min:0',
         ]);
@@ -97,7 +122,16 @@ class OssProductsController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $product->update($request->only(['name', 'category', 'unit', 'price', 'reorder_level', 'description', 'supplier', 'is_active']));
+        $product->update([
+            'name'          => $request->name,
+            'category'      => $this->normalizeCategory($request->category),
+            'unit'          => $request->unit,
+            'price'         => $request->price,
+            'reorder_level' => $request->reorder_level ?? 0,
+            'description'   => $request->description,
+            'supplier'      => $request->supplier,
+            'is_active'     => $request->boolean('is_active', true),
+        ]);
 
         return redirect()->route('oss-products.index')->with('success', __('Product updated.'));
     }

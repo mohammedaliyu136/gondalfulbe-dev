@@ -8,6 +8,8 @@ define('LARAVEL_START', microtime(true));
 // Allow enough time for legitimate heavy operations (migrations, seeder calls, etc.)
 // The webserver default of 30s is too low for this application.
 ini_set('max_execution_time', 120);
+ini_set('display_errors', '0');
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED & ~E_NOTICE & ~E_WARNING);
 
 /*
 |--------------------------------------------------------------------------
@@ -57,5 +59,4 @@ $response = tap($kernel->handle(
 ))->send();
 
 $kernel->terminate($request, $response);
-
 

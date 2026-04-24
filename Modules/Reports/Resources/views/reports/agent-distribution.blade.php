@@ -30,7 +30,7 @@
                 </div>
                 <div class="col-md-4">
                     <label class="form-label" style="font-size:.82rem">{{ __('Agent') }}</label>
-                    <select name="agent" class="form-control form-control-sm">
+                    <select name="agent_id" class="form-control form-control-sm">
                         <option value="">{{ __('All Agents') }}</option>
                         @foreach($agents as $a)
                             <option value="{{ $a->id }}" {{ (string)$agentId === (string)$a->id ? 'selected' : '' }}>
@@ -53,7 +53,7 @@
         <h6 class="mb-0 fw-semibold">
             <i class="ti ti-box me-2 text-success"></i>
             Agent Allocation vs. Sold vs. Returned
-            <span class="badge bg-secondary ms-1">{{ $agentSummary->total() }}</span>
+            <span class="badge bg-secondary ms-1">{{ method_exists($agentSummary, 'total') ? $agentSummary->total() : $agentSummary->count() }}</span>
         </h6>
     </div>
     <div class="card-body p-0">
@@ -132,7 +132,7 @@
             </table>
         </div>
     </div>
-    @if($agentSummary->hasPages())
+    @if(method_exists($agentSummary, 'hasPages') && $agentSummary->hasPages())
         <div class="card-footer bg-white">{{ $agentSummary->links() }}</div>
     @endif
 </div>

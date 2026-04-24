@@ -124,14 +124,14 @@
                             <td style="font-size:.82rem">
                                 {{ \Carbon\Carbon::parse($tx->created_at)->format('d M Y') }}
                             </td>
-                            <td style="font-size:.85rem">{{ $tx->product_name ?? '—' }}</td>
-                            <td style="font-size:.82rem; color:#6c757d">{{ $tx->warehouse_name ?? '—' }}</td>
+                            <td style="font-size:.85rem">{{ $tx->product?->name ?? '—' }}</td>
+                            <td style="font-size:.82rem; color:#6c757d">{{ $tx->center ?? '—' }}</td>
                             <td>
-                                @if(in_array($tx->type, ['in', 'purchase', 'receive']))
+                                @if(in_array($tx->type, ['in', 'purchase', 'receive', 'Stock In']))
                                     <span class="badge bg-success" style="font-size:.72rem">
                                         <i class="ti ti-arrow-down me-1"></i>In
                                     </span>
-                                @elseif(in_array($tx->type, ['out', 'sale', 'issue']))
+                                @elseif(in_array($tx->type, ['out', 'sale', 'issue', 'Stock Out']))
                                     <span class="badge bg-danger" style="font-size:.72rem">
                                         <i class="ti ti-arrow-up me-1"></i>Out
                                     </span>

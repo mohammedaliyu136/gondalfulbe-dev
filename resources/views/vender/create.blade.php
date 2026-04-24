@@ -92,7 +92,7 @@
         <div class="col-lg-4 col-md-4 col-sm-6">
             <div class="form-group">
                 {{Form::label('account_name',__('Account Name'),['class'=>'form-label'])}}<x-required></x-required>
-                {{Form::text('account_name',null,array('class'=>'form-control' , 'required'=>'required', 'readonly'=>'readonly', 'placeholder'=>__('Not set')))}}
+                {{Form::text('account_name',null,array('class'=>'form-control' , 'required'=>'required', 'placeholder'=>__('Enter Account Name or validate automatically')))}}
             </div>
         </div>
         @if(!$customFields->isEmpty())
@@ -210,7 +210,6 @@ $(document).ready(function() {
     // Update hidden input on change
     // retrive account name
     $('#bank').on('change', function() {
-        alert()
         var selectedOption = $(this).find(':selected'); // Get the selected option
         var bankName = selectedOption.html(); // Extract the 'data-name' attribute
         var bankCode = this.value;
@@ -231,17 +230,15 @@ $(document).ready(function() {
                 if (response.success) {
                     $('#account_name').prop('value', response.data.accountName);
                 } else {
-                    alert('Error: ' + response.message);
+                    $('#account_name').trigger('focus');
                 }
                 console.log(response);
             },
             error: function (xhr, status, error) {
                 console.error('Error:', error);
-                const errorMessage = xhr.responseJSON?.message || 'An unexpected error occurred.';
-                alert('Error: ' + errorMessage);
+                $('#account_name').trigger('focus');
             }
         });
     });
 });
 </script>
-

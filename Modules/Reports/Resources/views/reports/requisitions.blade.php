@@ -104,7 +104,7 @@
         <h6 class="mb-0 fw-semibold">
             <i class="ti ti-file-invoice me-2 text-primary"></i>
             Requisitions
-            <span class="badge bg-secondary ms-1">{{ $requisitions->total() }}</span>
+            <span class="badge bg-secondary ms-1">{{ method_exists($requisitions, 'total') ? $requisitions->total() : $requisitions->count() }}</span>
         </h6>
     </div>
     <div class="card-body p-0">
@@ -159,7 +159,7 @@
             </table>
         </div>
     </div>
-    @if($requisitions->hasPages())
+    @if(method_exists($requisitions, 'hasPages') && $requisitions->hasPages())
         <div class="card-footer bg-white">{{ $requisitions->links() }}</div>
     @endif
 </div>

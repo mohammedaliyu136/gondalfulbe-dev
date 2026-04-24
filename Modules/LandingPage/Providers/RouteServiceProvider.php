@@ -49,7 +49,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::middleware('web')
             ->namespace($this->moduleNamespace)
-            ->group(module_path('LandingPage', '/Routes/web.php'));
+            ->group($this->modulePath('Routes/web.php'));
     }
 
     /**
@@ -64,6 +64,11 @@ class RouteServiceProvider extends ServiceProvider
         Route::prefix('api')
             ->middleware('api')
             ->namespace($this->moduleNamespace)
-            ->group(module_path('LandingPage', '/Routes/api.php'));
+            ->group($this->modulePath('Routes/api.php'));
+    }
+
+    private function modulePath(string $path = ''): string
+    {
+        return dirname(__DIR__) . ($path !== '' ? DIRECTORY_SEPARATOR . ltrim($path, DIRECTORY_SEPARATOR) : '');
     }
 }

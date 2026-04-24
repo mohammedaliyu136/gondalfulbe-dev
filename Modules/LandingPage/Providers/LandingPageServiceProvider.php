@@ -27,7 +27,7 @@ class LandingPageServiceProvider extends ServiceProvider
         $this->registerTranslations();
         $this->registerConfig();
         $this->registerViews();
-        $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/Migrations'));
+        $this->loadMigrationsFrom($this->modulePath('Database/Migrations'));
     }
 
     /**
@@ -48,10 +48,10 @@ class LandingPageServiceProvider extends ServiceProvider
     protected function registerConfig()
     {
         $this->publishes([
-            module_path($this->moduleName, 'Config/config.php') => config_path($this->moduleNameLower . '.php'),
+            $this->modulePath('Config/config.php') => config_path($this->moduleNameLower . '.php'),
         ], 'config');
         $this->mergeConfigFrom(
-            module_path($this->moduleName, 'Config/config.php'), $this->moduleNameLower
+            $this->modulePath('Config/config.php'), $this->moduleNameLower
         );
     }
 
@@ -64,7 +64,7 @@ class LandingPageServiceProvider extends ServiceProvider
     {
         $viewPath = resource_path('views/modules/' . $this->moduleNameLower);
 
-        $sourcePath = module_path($this->moduleName, 'Resources/views');
+        $sourcePath = $this->modulePath('Resources/views');
 
         $this->publishes([
             $sourcePath => $viewPath
@@ -86,8 +86,8 @@ class LandingPageServiceProvider extends ServiceProvider
             $this->loadTranslationsFrom($langPath, $this->moduleNameLower);
             $this->loadJsonTranslationsFrom($langPath, $this->moduleNameLower);
         } else {
-            $this->loadTranslationsFrom(module_path($this->moduleName, 'Resources/lang'), $this->moduleNameLower);
-            $this->loadJsonTranslationsFrom(module_path($this->moduleName, 'Resources/lang'), $this->moduleNameLower);
+            $this->loadTranslationsFrom($this->modulePath('Resources/lang'), $this->moduleNameLower);
+            $this->loadJsonTranslationsFrom($this->modulePath('Resources/lang'), $this->moduleNameLower);
         }
     }
 
@@ -99,6 +99,11 @@ class LandingPageServiceProvider extends ServiceProvider
     public function provides()
     {
         return [];
+    }
+
+    private function modulePath(string $path = ''): string
+    {
+        return dirname(__DIR__) . ($path !== '' ? DIRECTORY_SEPARATOR . ltrim($path, DIRECTORY_SEPARATOR) : '');
     }
 
     private function getPublishableViewPaths(): array

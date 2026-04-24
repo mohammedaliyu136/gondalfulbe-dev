@@ -25,6 +25,29 @@ class OssProduct extends Model
     public function saleItems()       { return $this->hasMany(OssSaleItem::class, 'product_id'); }
     public function agentSaleItems()  { return $this->hasMany(OssAgentSaleItem::class, 'product_id'); }
 
+    public function getUnitPriceAttribute(): string
+    {
+        return (string) $this->price;
+    }
+
+    public function getReorderQuantityAttribute(): float
+    {
+        return (float) $this->reorder_level;
+    }
+
+    public function getStockStatusAttribute(): string
+    {
+        if ($this->current_stock <= 0) {
+            return 'Out of Stock';
+        }
+
+        if ($this->isLowStock()) {
+            return 'Low Stock';
+        }
+
+        return 'OK';
+    }
+
     public function getCurrentStockAttribute(?string $center = null): float
     {
         $query = OssInventory::where('product_id', $this->id);

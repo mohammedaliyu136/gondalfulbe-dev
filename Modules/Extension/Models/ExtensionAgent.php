@@ -32,6 +32,11 @@ class ExtensionAgent extends Model
             ->count();
     }
 
+    public function visitsThisWeek(): int
+    {
+        return $this->getVisitsThisWeekAttribute();
+    }
+
     public function isBelowTarget(): bool
     {
         return $this->visits_this_week < 2;

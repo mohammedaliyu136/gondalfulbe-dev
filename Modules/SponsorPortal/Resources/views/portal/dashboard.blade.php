@@ -4,7 +4,7 @@
 @section('content')
 <div class="row mb-4">
     <div class="col-12">
-        <h4>{{ __('Welcome,') }} {{ auth('sponsor')->user()->name }}</h4>
+        <h4>{{ __('Welcome,') }} {{ auth('sponsor')->user()->contact_person ?? auth('sponsor')->user()->organization_name }}</h4>
         <p class="text-muted">{{ __('Your investment portfolio and impact metrics.') }}</p>
     </div>
 </div>
@@ -20,20 +20,20 @@
                     </span>
                     <small class="text-muted">{{ $project->project_code }}</small>
                 </div>
-                <h5 class="card-title mb-1">{{ $project->name }}</h5>
+                <h5 class="card-title mb-1">{{ $project->title }}</h5>
                 @if($project->description)
                 <p class="text-muted small mb-3">{{ Str::limit($project->description, 100) }}</p>
                 @endif
                 <div class="row g-2 text-center mb-3">
                     <div class="col-4">
                         <div class="p-2 bg-light rounded">
-                            <div class="fw-bold">₦{{ number_format($project->budget_allocated / 1000, 0) }}K</div>
+                            <div class="fw-bold">₦{{ number_format(((float) $project->budget) / 1000, 0) }}K</div>
                             <div class="text-muted" style="font-size:.7rem">{{ __('Budget') }}</div>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="p-2 bg-light rounded">
-                            <div class="fw-bold">{{ $project->farmers->count() }}</div>
+                            <div class="fw-bold">{{ $project->farmers_count ?? $project->farmers->count() }}</div>
                             <div class="text-muted" style="font-size:.7rem">{{ __('Farmers') }}</div>
                         </div>
                     </div>

@@ -36,10 +36,10 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">{{ __('Unit Price (₦)') }} <span class="text-danger">*</span></label>
-                            <input type="number" step="0.01" min="0" name="unit_price"
-                                   class="form-control @error('unit_price') is-invalid @enderror"
-                                   value="{{ old('unit_price', $product->unit_price ?? '') }}" required>
-                            @error('unit_price')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <input type="number" step="0.01" min="0" name="price"
+                                   class="form-control @error('price') is-invalid @enderror"
+                                   value="{{ old('price', old('unit_price', $product->price ?? $product->unit_price ?? '')) }}" required>
+                            @error('price')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">{{ __('Unit') }} <span class="text-danger">*</span></label>

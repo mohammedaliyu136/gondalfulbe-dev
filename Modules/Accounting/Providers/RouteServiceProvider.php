@@ -15,6 +15,11 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::middleware('web')
             ->namespace($this->moduleNamespace)
-            ->group(module_path('Accounting', '/Routes/web.php'));
+            ->group($this->modulePath('Routes/web.php'));
+    }
+
+    private function modulePath(string $path = ''): string
+    {
+        return dirname(__DIR__) . ($path !== '' ? DIRECTORY_SEPARATOR . ltrim($path, DIRECTORY_SEPARATOR) : '');
     }
 }
