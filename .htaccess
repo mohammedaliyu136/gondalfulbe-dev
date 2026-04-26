@@ -23,7 +23,7 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_URI} !^/public/
-    RewriteRule ^(css|assets|landing|storage|installer|js)/(.*)$ public/$1/$2 [L,NC]
+    RewriteRule ^(css|assets|landing|storage|installer|js|uploads)/(.*)$ public/$1/$2 [L,NC]
     php_value memory_limit 512M
 </IfModule>
 

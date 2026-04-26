@@ -109,7 +109,7 @@
         <h6 class="mb-0 fw-semibold">
             <i class="ti ti-table me-2 text-warning"></i>
             Collection Records
-            <span class="badge bg-secondary ms-1">{{ $records->total() }}</span>
+            <span class="badge bg-secondary ms-1">{{ method_exists($records, 'total') ? $records->total() : $records->count() }}</span>
         </h6>
         <div class="d-flex gap-2">
             <a href="{{ route('reports.milk', array_merge(request()->query(), ['export' => 'pdf'])) }}"
@@ -171,7 +171,7 @@
             </table>
         </div>
     </div>
-    @if($records->hasPages())
+    @if(method_exists($records, 'hasPages') && $records->hasPages())
         <div class="card-footer bg-white">
             {{ $records->links() }}
         </div>

@@ -127,7 +127,7 @@ class ReportsController extends Controller
         }
 
         $creatorId   = Auth::user()->creatorId();
-        $collections = collect();
+        $collections = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 50);
         $summary     = ['total_litres' => 0, 'grade_a' => 0, 'grade_b' => 0, 'grade_c' => 0, 'total' => 0];
 
         if (class_exists(\Modules\MilkCollection\Models\MilkCollection::class)) {
