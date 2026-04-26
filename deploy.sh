@@ -64,6 +64,11 @@ set -e
 cd ${REMOTE_PATH}
 
 echo "  → pulling from GitHub..."
+# Stash any uncommitted server-side changes so pull never aborts
+if ! git diff --quiet || ! git diff --cached --quiet; then
+  echo "  → stashing uncommitted server changes..."
+  git stash push -m "pre-deploy-stash-$(date +%s)"
+fi
 git pull origin ${BRANCH}
 
 echo "  → clearing caches..."
